@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css?family=Play&display=swap');
+body{margin: 0;}
+#levelpic{
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  top: 2px;
+  left: 5px;
+}
+#elo{
+  color: white;
+  font-family: play;
+  position: absolute;
+  top: 7px;
+  left: 38px;
+}
+#wrap{
+  background-color: #1a1a1d;
+  height: 35px;
+  width: 85px;
+  border-radius: 16px;
+}
+#tutor{
+  font-family: play;
+  text-align: center;
+}
+.yellow{
+  color: rgb(255, 85, 0);
+}
