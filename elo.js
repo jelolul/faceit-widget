@@ -1,5 +1,6 @@
 const url = new URLSearchParams(window.location.search);
 const nickname = url.get("user");
+const game = url.get("game");
 
 var elodisplay = document.getElementById("elo");
 var levelpic = document.getElementById("levelpic");
@@ -10,7 +11,10 @@ function updateelo() {
   var oReq = new XMLHttpRequest();
   oReq.open(
     "GET",
-    "https://open.faceit.com/data/v4/players?nickname=" + nickname + "&game=cs2"
+    "https://open.faceit.com/data/v4/players?nickname=" +
+      nickname +
+      "&game=" +
+      game
   );
   oReq.setRequestHeader("accept", "application/json");
   oReq.setRequestHeader(
