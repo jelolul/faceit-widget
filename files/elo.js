@@ -10,7 +10,7 @@ function updateelo() {
   var oReq = new XMLHttpRequest();
   oReq.open(
     "GET",
-    "https://open.faceit.com/data/v4/players?nickname=jelolul" + "&game=cs2"
+    "https://open.faceit.com/data/v4/players?nickname=" + nickname + "&game=cs2"
   );
   oReq.setRequestHeader("accept", "application/json");
   oReq.setRequestHeader(
