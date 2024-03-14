@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Play&display=swap');
-body{margin: 0;}
+body{margin: 0; background-color: black;}
 #levelpic{
   height: 30px;
   width: 30px;
