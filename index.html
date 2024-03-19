@@ -3,16 +3,94 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>FaceIt Widget for elo and lvl</title>
+  <title>FACEIT Tracker</title>
   <link rel="stylesheet" href="main.css">
+  <link rel="shortcut icon" href="favicon.svg" type="image/x-icon">
 </head>
 
 <body>
-  <div id="wrap">
-    <img id="levelpic" src="skill_level_1_svg.svg">
-    <text id="elo">777</text>
-  </div>
-  <script defer src="elo.js" type="text/javascript"></script>
+  <div class="site">
+    <div class="nav">
+      <div class="nav-left">
+        <div class="site-title"><b>FACEIT Tracker</b></div>
+        <a class="nav-button uppercase" href="/">Widget</a>
+        <a class="nav-button disabled uppercase">Help (WIP)</a>
+      </div>
+      <div class="nav-right">
+      </div>
+    </div>
+    <div class="content">
+      <div class="widget-editor-content">
+        <div class="heading">Create your own FACEIT Widget
+          <span id="status">BETA</span>
+        </div>
+        <div class="editor">
+          <div class="widget-editor">
+            <div class="setting">
+              <div class="setting-label tooltip">FACEIT Nickname
+                <span class="tooltip-text">Case-Sensitive</span>
+              </div>
+              <input type="text" id="faceit-nickname" placeholder="FrozenBag">
+            </div>
+            <div class="setting">
+              <div class="setting-label tooltip">Game
+                <span class="tooltip-text">Currently only supports CS2, as that's <b>AFAIK</b> the only game that
+                  supports matchmaking. <b>(where ELO changes)</b></span>
+              </div>
+              <select name="game" id="game-dropdown" disabled>
+                <option value="cs2">CS2</option>
+              </select>
+            </div>
+            <div class="setting">
+              <div class="setting-label">Background Color</div>
+              <input type="color" name="widget-background-color" id="color-picker" value="#1a1a1d">
+            </div>
+            <div class="setting">
+              <div class="setting-label">Text Color</div>
+              <input type="color" name="widget-text-color" id="color-picker" value="#ffffff">
+            </div>
+            <div class="setting">
+              <div class="setting-label">Border Radius</div>
+              <input type="number" name="widget-border-radius" id="number-box" min="0" max="24" value="24">
+            </div>
+          </div>
+          <div class="widget-preview">
+            <div id="wrap">
+              <img id="level-pic"
+                src="https://cdn-frontend.faceit.com/web/960/src/app/assets/images-compress/skill-icons/skill_level_1_svg.svg">
+              <text id="elo">100</text>
+            </div>
+          </div>
+        </div>
+        <div class="button-bar">
+          <div class="primary-button" id="copy-link" disabled="true">Copy Link</div>
+        </div>
+        <hr style="border: none; border-top: 1px solid rgb(48, 48, 48); width: 100%;">
+        <div class="help">
+          <h3 style="color: white;">Recommended Settings for OBS Studio</h3>
+          <p>
+            Width: 85<br>
+            Height: 35
+          </p>
+        </div>
+        <hr style="border: none; border-top: 1px solid rgb(48, 48, 48); width: 100%;">
+        <div class="info">
+          <p>Future updates will bring more customization,
+            <a class="link" target="_blank" href="https://github.com/jelolul/faceit-tracker/issues/new">requests are
+              welcome.</a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <p>
+        FACEIT Tracker is not affiliated with Valve or FACEIT. All Trademarks referred to are the
+        property of their respective owners. <br><br>
+        made by
+        <a href="https://github.com/jelolul" target="_blank">jelo</a>
+      </p>
+    </div>
+    <script defer src="main.js" type="text/javascript"></script>
 </body>
 
 </html>

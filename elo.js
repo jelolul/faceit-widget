@@ -1,9 +1,17 @@
 const url = new URLSearchParams(window.location.search);
 const nickname = url.get("user");
 const game = url.get("game");
+const background_color = url.get("background-color");
+const text_color = url.get("text-color");
+const border_radius = url.get("border-radius");
 
 var elodisplay = document.getElementById("elo");
-var levelpic = document.getElementById("levelpic");
+var levelpic = document.getElementById("level-pic");
+var widget = document.getElementById("wrap");
+
+widget.style.background = "#" + background_color;
+widget.style.borderRadius = border_radius;
+elodisplay.style.color = "#" + text_color;
 
 updateelo();
 setInterval(updateelo, 20000);
