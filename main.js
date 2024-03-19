@@ -73,7 +73,7 @@ function get_widget_link() {
   border_radius_value = border_radius_value + "px";
 
   navigator.clipboard.writeText(
-    "http://127.0.0.1:3000/widget.html?user=" +
+    "http://127.0.0.1:3000/widget?user=" +
       faceit_username.value +
       "&game=cs2&background-color=" +
       background_color_value +
