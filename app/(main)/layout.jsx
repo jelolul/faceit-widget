@@ -1,6 +1,7 @@
 import '@styles/globals.css';
 
 import Nav from '@components/Nav';
+import { Suspense } from 'react';
 
 export const metadata = {
   title: "FACEIT Tracker",
@@ -19,7 +20,9 @@ const RootLayout = ({ children }) => {
 
         <main className="app">
           <Nav />
-          {children}
+          <Suspense>
+            {children}
+          </Suspense>
         </main>
       </body>
     </html>

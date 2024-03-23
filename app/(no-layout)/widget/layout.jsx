@@ -1,4 +1,5 @@
 import '@styles/globals.css';
+import { Suspense } from 'react';
 
 export const metadata = {
     title: "FACEIT Tracker Widget",
@@ -12,7 +13,9 @@ const WidgetLayout = ({ children }) => {
     return (
         <html>
             <body>
-                {children}
+                <Suspense>
+                    {children}
+                </Suspense>
             </body>
         </html>
     )

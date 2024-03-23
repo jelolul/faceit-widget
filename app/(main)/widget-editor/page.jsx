@@ -13,8 +13,6 @@ function WidgetEditor() {
     const router = useRouter();
     const pathname = usePathname();
 
-    const github_prefix = '/faceit-tracker'
-
     const [nickname, setNickname] = useState('');
     const [border_radius, setBorderRadius] = useState();
     const [backgroundColor, setBackgroundColor] = useState("1f1f22");
@@ -22,13 +20,13 @@ function WidgetEditor() {
     const [data, setData] = useState();
     const [elo, setElo] = useState('100');
     const [level, setLevel] = useState('1');
+    const backgroundParam = searchParams.get('background-color');
+    const colorParam = searchParams.get('font-color');
+    const borderRadiusParam = searchParams.get('border-radius');
+    const nicknameParam = searchParams.get('nickname');
 
     useEffect(() => {
         const updateStates = () => {
-            const backgroundParam = searchParams.get('background-color');
-            const colorParam = searchParams.get('font-color');
-            const borderRadiusParam = searchParams.get('border-radius');
-            const nicknameParam = searchParams.get('nickname');
 
             if (backgroundParam) {
                 setBackgroundColor(backgroundParam);
@@ -178,7 +176,7 @@ function WidgetEditor() {
                 </div>
                 <Button className="!w-full" text="Copy Link" onClick={e => {
                     document.getElementById("status-thingy").classList.remove("hidden");
-                    navigator.clipboard.writeText(window.location.origin + github_prefix + "/widget?" + searchParams)
+                    navigator.clipboard.writeText(window.location.origin + "/widget?" + searchParams)
                 }} />
                 <Status id="status-thingy" text="Copied link!" className="hidden" />
             </div>
