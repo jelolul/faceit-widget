@@ -1,4 +1,4 @@
- <p align="center"><img src="https://raw.githubusercontent.com/jelolul/faceit-widget/main/public/assets/icons/faceit-widget-logo.svg" width=582px height=220px></p>
+ <p align="center"><a href="https://faceit-widget.vercel.app/"><img src="https://raw.githubusercontent.com/jelolul/faceit-widget/main/public/assets/icons/faceit-widget-logo.svg" width=582px height=220px></a></p>
 
 <p align="center">Displays your FACEIT level and ELO on supported games in a customizable widget.</p>
 
@@ -6,7 +6,7 @@
 
 ### <p align="center">Widget Editor
 
-<p align="center"><img src="https://github.com/user-attachments/assets/40a20e81-adc8-476f-8649-8457ce8c1e26"></p>
+<p align="center"><a href=""><img src="https://github.com/user-attachments/assets/40a20e81-adc8-476f-8649-8457ce8c1e26"></a></p>
 
 ## <p align="center">Usage</p>
 
