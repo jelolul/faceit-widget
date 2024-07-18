@@ -1,6 +1,8 @@
-# FACEIT Widget
+# <img src="https://github.com/user-attachments/assets/f9590c4b-0b35-47b7-a87e-c2d120c5d1f5" width=32px height=32px> FACEIT Widget
 
 Displays your FACEIT level and ELO on supported games in a customizable widget.
+
+![preview](https://github.com/user-attachments/assets/40a20e81-adc8-476f-8649-8457ce8c1e26)
 
 ## Usage
 1) Go to https://faceit-widget.vercel.app/
