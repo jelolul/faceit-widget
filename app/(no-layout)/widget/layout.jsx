@@ -2,8 +2,8 @@ import '@styles/globals.css';
 import { Suspense } from 'react';
 
 export const metadata = {
-    title: "FACEIT Tracker Widget",
-    description: "the widget thing :)",
+    title: "FACEIT Widget",
+    description: "Displays your FACEIT level and ELO on supported games in a customizable widget.",
     icons: {
         icon: "/assets/icons/favicon.svg"
     }

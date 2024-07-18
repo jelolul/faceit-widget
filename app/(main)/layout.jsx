@@ -4,8 +4,8 @@ import Nav from '@components/Nav';
 import { Suspense } from 'react';
 
 export const metadata = {
-  title: "FACEIT Tracker",
-  description: "Display your FACEIT level on your stream.",
+  title: "FACEIT Widget",
+  description: "Displays your FACEIT level and ELO on supported games in a customizable widget.",
   icons: {
     icon: "/assets/icons/favicon.svg"
   }
