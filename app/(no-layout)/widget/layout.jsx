@@ -12,6 +12,7 @@ export const metadata = {
         title: "FACEIT Widget",
         description: "Displays your FACEIT level and ELO on supported games in a customizable widget.",
         type: 'website',
+        siteName: "FACEIT Widget",
         images: [
             {
                 url: '/assets/images/faceit-widget-social.png',
