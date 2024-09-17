@@ -1,4 +1,4 @@
- <p align="center"><img src="https://raw.githubusercontent.com/jelolul/faceit-widget/main/public/assets/icons/faceit-widget-logo.svg" width=582px height=220px></p>
+ <p align="center"><a href="https://faceit-widget.vercel.app/"><img src="https://raw.githubusercontent.com/jelolul/faceit-widget/main/public/assets/icons/faceit-widget-logo.svg" width=582px height=220px></a></p>
 
 <p align="center">Displays your FACEIT level and ELO on supported games in a customizable widget.</p>
 
@@ -6,14 +6,16 @@
 
 ### <p align="center">Widget Editor
 
-<p align="center"><img src="https://github.com/user-attachments/assets/40a20e81-adc8-476f-8649-8457ce8c1e26"></p>
+<p align="center"><a href=""><img src="https://github.com/user-attachments/assets/40a20e81-adc8-476f-8649-8457ce8c1e26"></a></p>
 
 ## <p align="center">Usage</p>
 
 1. Go to https://faceit-widget.vercel.app/
 2. Enter your FACEIT Nickname & change the styling (optional)
 3. Press the big `COPY LINK` button
-4. Use the settings for OBS Studio **(recommended)**
+4. Use these settings for OBS Studio **(recommended):**
+- Width: 85
+- Height: 35
 
 ## <p align="center">Widget Previews</p>
 
