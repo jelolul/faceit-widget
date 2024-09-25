@@ -29,7 +29,8 @@ body {
 
 input[type="number"],
 input[type="text"],
-select {
+select,
+.dropdown-button {
 	@apply w-full h-[35px] bg-gray-300 focus:outline-none border border-[#ffffff0a] rounded-[4px] p-[7px] text-[14px] placeholder:text-color-secondary;
 }
 
@@ -38,7 +39,8 @@ select {
 	outline: none;
 }
 
-input:hover {
+input:hover,
+.dropdown-button:hover {
 	background-color: rgb(66, 66, 66);
 	border-color: rgba(255, 255, 255, 0.1);
 }
@@ -70,6 +72,18 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	padding: 0;
 }
 
+.dropdown-option {
+	@apply text-white/80 rounded-sm;
+}
+
+.dropdown-option:hover {
+	@apply bg-white/10 text-white outline-offset-[-1px] outline-1 outline outline-[#ffffff0a] cursor-pointer;
+}
+
+.dropdown-menu {
+	@apply bg-gray-300 focus:outline-none border border-[#ffffff0a] rounded-[4px] p-[4px] shadow-md shadow-black/50;
+}
+
 .color-picker {
 	@apply w-full h-[35px] bg-gray-300 focus:outline-none border border-[#ffffff0a] rounded-[4px] pr-0 text-[14px] placeholder:text-color-secondary flex gap-[1px];
 }
@@ -82,6 +96,53 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	@apply !h-[35px] !leading-[12px] !w-10 !ml-1 !rounded-[4px] !px-0 !text-[16px] after:inline-block after:bg-[url('/assets/icons/history.svg')] after:size-[16px] after:mt-[-2px] after:bg-cover;
 }
 
+.section {
+	@apply p-2 grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-template-rows: repeat(2, 0fr);
+	row-gap: 10px;
+	column-gap: 10px;
+}
+
+.section.new {
+	@apply border-primary/80 border rounded-md;
+}
+
+.tooltip-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	align-items: left;
+	justify-content: center;
+}
+
+.tooltip {
+	@apply w-max bg-gray-300 border shadow-sm shadow-black/30 border-[#ffffff0a] rounded-[4px] p-[7px] text-[14px] mt-[-80px] z-20;
+	font-size: 12px;
+	font-weight: 400;
+	text-align: center;
+	transition: all 0.3s ease;
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.arrow {
+	height: 0;
+	width: 0;
+	border-left: 12px solid transparent;
+	border-right: 12px solid transparent;
+	@apply border-t-[12px] border-t-gray-300;
+	position: absolute;
+	bottom: -8px;
+	left: calc(50% - 12px);
+}
+
+.tooltip.open {
+	transform: translateY(-2px);
+	opacity: 1;
+}
+
 .setting-label {
 	font-size: 14px;
 }
@@ -92,7 +153,6 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	-webkit-user-drag: none;
 }
 #elo {
-	color: white;
 	font-family: Play, sans-serif;
 	font-weight: 400;
 	font-size: 16px;
@@ -102,6 +162,26 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 }
 
 #wrap {
+	width: max-content;
+	display: flex;
+	justify-content: left;
+	align-items: center;
+	padding-right: 10px;
+	gap: 3px;
+	min-width: auto;
+}
+
+#widget > * {
+	color: white;
+	font-family: Play, sans-serif;
+	font-weight: 400;
+	font-size: 16px;
+	min-height: 0;
+	width: max-content;
+	text-align: center;
+}
+
+#widget {
 	box-sizing: content-box;
 	background: #1f1f22;
 	height: 35px;
@@ -112,9 +192,35 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	align-items: center;
 	gap: 3px;
 	padding-left: 3px;
-	padding-right: 10px;
-	max-width: 90px;
+	padding-right: 3px;
+	/* max-width: 90px; */
 	min-width: auto;
+}
+
+.separator {
+	border-left: rgba(255, 255, 255, 0.25) 1px solid;
+	height: 8px;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+#stats {
+	width: max-content;
+	display: flex;
+	justify-content: left;
+	align-items: center;
+	gap: 3px;
+	padding-right: 10px;
+	min-width: auto;
+}
+
+.mdi--globe {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M17.9 17.39c-.26-.8-1.01-1.39-1.9-1.39h-1v-3a1 1 0 0 0-1-1H8v-2h2a1 1 0 0 0 1-1V7h2a2 2 0 0 0 2-2v-.41a7.984 7.984 0 0 1 2.9 12.8M11 19.93c-3.95-.49-7-3.85-7-7.93c0-.62.08-1.22.21-1.79L9 15v1a2 2 0 0 0 2 2m1-16A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2'/%3E%3C/svg%3E");
 }
 
 .content {
@@ -162,12 +268,13 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 .widget-editor {
 	padding: 10px;
 	width: 100%;
-	display: grid;
+	/* display: grid; */
+	display: flex;
+	flex-direction: column;
 	grid-template-columns: repeat(2, 1fr);
 	grid-template-rows: repeat(2, 0fr);
-	row-gap: 10px;
-	column-gap: 10px;
-	margin: 5px;
+	gap: 10px;
+	/* margin: 5px; */
 }
 
 .widget-preview {

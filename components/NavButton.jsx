@@ -6,7 +6,7 @@ const NavButton = (props) => {
     const pathname = usePathname();
 
     return (
-        <div className={`flex relative font-bold hover:text-color-primary ${pathname == props.href ? "text-color-primary" : "text-color-secondary"}`}>
+        <div className={`flex relative uppercase text-[14px] font-bold hover:text-color-primary ${pathname == props.href ? "text-color-primary" : "text-color-secondary"}`}>
             < div className="flex h-full self-center" >
                 <Link className="px-5 pt-5" href={props.href}>
                     {props.text}
