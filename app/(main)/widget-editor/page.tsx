@@ -360,7 +360,7 @@ function WidgetEditor() {
 						<div className="section new">
 							<div className="setting">
 								<div className="truncate setting-label gap-2 flex">
-									Show Average K/D
+									Show Average KDR
 								</div>
 								<div className="container flex">
 									<Listbox
