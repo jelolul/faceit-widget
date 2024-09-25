@@ -22,7 +22,10 @@ const Widget = (props: any) => {
 			{/* Conditionally render the separator and stats div */}
 			{shouldDisplayKD && (
 				<>
-					<div className="separator"></div>
+					<div
+						className={`separator border-l-[1px]`}
+						style={{ borderLeftColor: props.textColor }}
+					></div>
 					<div id="stats">
 						<div style={{ color: props.textColor }}>
 							{props.avgKd}
@@ -33,7 +36,10 @@ const Widget = (props: any) => {
 			)}
 			{shouldDisplayRanking && (
 				<>
-					<div className="separator"></div>
+					<div
+						className={`separator border-l-[1px]`}
+						style={{ borderLeftColor: props.textColor }}
+					></div>
 					<div id="stats" className="!gap-[8px]">
 						<div
 							className={`flex flex-col place-items-center gap-0`}

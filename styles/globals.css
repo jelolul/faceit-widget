@@ -166,7 +166,6 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	display: flex;
 	justify-content: left;
 	align-items: center;
-	padding-right: 10px;
 	gap: 3px;
 	min-width: auto;
 }
@@ -198,10 +197,11 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 }
 
 .separator {
-	border-left: rgba(255, 255, 255, 0.25) 1px solid;
 	height: 8px;
-	padding-left: 3px;
-	padding-right: 3px;
+	margin-left: 3px;
+	margin-right: 3px;
+	opacity: 0.3;
+	/* mix-blend-mode: difference; */
 }
 
 #stats {
@@ -210,8 +210,11 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	justify-content: left;
 	align-items: center;
 	gap: 3px;
-	padding-right: 10px;
 	min-width: auto;
+}
+
+#stats:last-child {
+	padding-right: 10px;
 }
 
 .mdi--globe {
