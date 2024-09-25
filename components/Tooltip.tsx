@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "@styles/globals.css";
 
-const Tooltip = ({ text, children }) => {
+const Tooltip = ({ text, children }: any) => {
 	const [showTooltip, setShowTooltip] = useState(false);
 
 	return (
