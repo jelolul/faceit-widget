@@ -191,7 +191,7 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	align-items: center;
 	gap: 3px;
 	padding-left: 3px;
-	padding-right: 10px;
+	padding-right: 13px;
 	/* max-width: 90px; */
 	min-width: auto;
 }
