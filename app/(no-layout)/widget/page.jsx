@@ -18,7 +18,7 @@ function widget() {
     const [avgKD, setAvgKD] = useState('1.00');
 
     const backgroundParam = searchParams.get('background-color');
-    const colorParam = searchParams.get('font-color');
+    const colorParam = searchParams.get('text-color');
     const borderRadiusParam = searchParams.get('border-radius');
     const nicknameParam = searchParams.get('nickname');
     const displayKDParam = searchParams.get('show-kd');
@@ -73,10 +73,11 @@ function widget() {
             console.log("Updated data.")
         }, 20000);
         console.log("USER: " + nicknameParam)
+        console.log(colorParam)
     }, []);
 
     return (
-        <Widget src={`https://cdn-frontend.faceit.com/web/960/src/app/assets/images-compress/skill-icons/skill_level_${level}_svg.svg`} elo={elo} avgKd={avgKD} displayKD={displayKDParam} playerRanking={playerRanking} displayRanking={displayRankingParam} region={region} className="" style={{ borderRadius: borderRadiusParam + "px", backgroundColor: "#" + backgroundParam }} textColor={{ color: "#" + colorParam }} />
+        <Widget src={`https://cdn-frontend.faceit.com/web/960/src/app/assets/images-compress/skill-icons/skill_level_${level}_svg.svg`} elo={elo} avgKd={avgKD} displayKD={displayKDParam} playerRanking={playerRanking} displayRanking={displayRankingParam} region={region} className="" style={{ borderRadius: borderRadiusParam + "px", backgroundColor: "#" + backgroundParam }} textColor={`#${colorParam}`} />
     )
 }
 

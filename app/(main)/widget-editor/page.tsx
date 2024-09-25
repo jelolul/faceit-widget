@@ -40,9 +40,9 @@ function WidgetEditor() {
 	const pathname = usePathname();
 
 	const [nickname, setNickname] = useState("");
-	const [border_radius, setBorderRadius] = useState();
+	const [border_radius, setBorderRadius] = useState("24");
 	const [backgroundColor, setBackgroundColor] = useState("1f1f22");
-	const [fontColor, setFontColor] = useState("ffffff");
+	const [textColor, setTextColor] = useState("ffffff");
 	const [data, setData] = useState();
 	const [elo, setElo] = useState("100");
 	const [level, setLevel] = useState("1");
@@ -60,7 +60,7 @@ function WidgetEditor() {
 	const [avgKD, setAvgKD] = useState("1.00");
 
 	const backgroundParam = searchParams.get("background-color");
-	const colorParam = searchParams.get("font-color");
+	const colorParam = searchParams.get("text-color");
 	const borderRadiusParam = searchParams.get("border-radius");
 	const nicknameParam = searchParams.get("nickname");
 	const displayKDParam = searchParams.get("show-kd");
@@ -70,25 +70,18 @@ function WidgetEditor() {
 		const updateStates = () => {
 			if (backgroundParam) {
 				setBackgroundColor(backgroundParam);
-				document.getElementById("background-color").value =
-					"#" + backgroundParam;
 			}
 
 			if (colorParam) {
-				setFontColor(colorParam);
-				document.getElementById("text-color").value = "#" + colorParam;
+				setTextColor(colorParam);
 			}
 
 			if (borderRadiusParam) {
 				setBorderRadius(borderRadiusParam);
-				document.getElementById("border-radius").value =
-					borderRadiusParam;
 			}
 
 			if (nicknameParam) {
 				setNickname(nicknameParam);
-				document.getElementById("faceit-nickname").value =
-					nicknameParam;
 			}
 
 			if (displayKDParam) {
@@ -176,14 +169,14 @@ function WidgetEditor() {
 	}, [nickname]);
 
 	function update_widget(term: any, param: any) {
-		const params = new URLSearchParams(searchParams);
+		const params = new URLSearchParams(searchParams.toString());
 		if (term) {
 			params.set(param, term);
 		} else {
 			params.delete(param);
 		}
 
-		router.replace(`${pathname}?${params.toString()}`, { shallow: true });
+		router.replace(`${pathname}?${params.toString()}`);
 	}
 
 	return (
@@ -208,13 +201,16 @@ function WidgetEditor() {
 										placeholder="FrozenBag"
 										onBlur={(e) => {
 											setNickname(
-												searchParams.get("nickname")
+												searchParams.get("nickname") ||
+													"FrozenBag"
 											);
 										}}
 										onKeyDown={(e) => {
 											if (e.key === "Enter") {
 												setNickname(
-													searchParams.get("nickname")
+													searchParams.get(
+														"nickname"
+													) || "FrozenBag"
 												);
 											}
 										}}
@@ -257,16 +253,15 @@ function WidgetEditor() {
 								</div>
 								<div className="container flex">
 									<ColorPicker
-										onBlur={(e) => {
+										onBlur={(e: any) => {
 											update_widget(
 												e.target.value.replace("#", ""),
 												"background-color"
 											);
 										}}
-										onInput={(e) => {
+										onInput={(e: any) => {
 											setBackgroundColor(
-												e.target.value.replace("#", ""),
-												"background-color"
+												e.target.value.replace("#", "")
 											);
 										}}
 										className="w-full"
@@ -275,18 +270,12 @@ function WidgetEditor() {
 										value={`#${backgroundColor}`}
 									/>
 									<Button
-										onClick={(e) => {
+										onClick={(e: any) => {
 											update_widget(
 												"1f1f22",
 												"background-color"
 											);
-											setBackgroundColor(
-												"1f1f22",
-												"background-color"
-											);
-											document.getElementById(
-												"background-color"
-											).value = "#1f1f22";
+											setBackgroundColor("1f1f22");
 										}}
 										className="default-button"
 									/>
@@ -298,36 +287,29 @@ function WidgetEditor() {
 								</div>
 								<div className="container flex">
 									<ColorPicker
-										onBlur={(e) => {
+										onBlur={(e: any) => {
 											update_widget(
 												e.target.value.replace("#", ""),
 												"text-color"
 											);
 										}}
-										onInput={(e) => {
-											setFontColor(
-												e.target.value.replace("#", ""),
-												"text-color"
+										onInput={(e: any) => {
+											setTextColor(
+												e.target.value.replace("#", "")
 											);
 										}}
 										className="w-full"
 										name="widget-text-color"
 										id="text-color"
-										value={`#${fontColor}`}
+										value={`#${textColor}`}
 									/>
 									<Button
-										onClick={(e) => {
+										onClick={(e: any) => {
 											update_widget(
 												"ffffff",
 												"text-color"
 											);
-											setFontColor(
-												"ffffff",
-												"text-color"
-											);
-											document.getElementById(
-												"text-color"
-											).value = "#ffffff";
+											setTextColor("ffffff");
 										}}
 										className="default-button"
 									/>
@@ -346,8 +328,7 @@ function WidgetEditor() {
 												"border-radius"
 											);
 											setBorderRadius(
-												e.currentTarget.value,
-												"border-radius"
+												e.currentTarget.value
 											);
 										}}
 										className="w-full"
@@ -355,21 +336,15 @@ function WidgetEditor() {
 										id="border-radius"
 										min="0"
 										max="24"
-										defaultValue="24"
+										value={`${border_radius}`}
 									/>
 									<Button
-										onClick={(e) => {
+										onClick={(e: any) => {
 											update_widget(
 												"24",
 												"border-radius"
 											);
-											setBorderRadius(
-												"24",
-												"border-radius"
-											);
-											document.getElementById(
-												"border-radius"
-											).value = "24";
+											setBorderRadius("24");
 										}}
 										className="default-button"
 									/>
@@ -449,7 +424,7 @@ function WidgetEditor() {
 									</Listbox>
 
 									<Button
-										onClick={(e) => {
+										onClick={(e: any) => {
 											update_widget("false", "show-kd");
 											setDisplayKD(displayKDOptions[0]);
 										}}
@@ -533,7 +508,7 @@ function WidgetEditor() {
 									</Listbox>
 
 									<Button
-										onClick={(e) => {
+										onClick={(e: any) => {
 											update_widget(
 												"false",
 												"show-ranking"
@@ -556,7 +531,7 @@ function WidgetEditor() {
 							}}
 							src="/assets/images/nuke_default_s2.jpg"
 							alt="de_nuke in CS2"
-							fill="true"
+							fill={true}
 							objectFit="cover"
 							objectPosition="center"
 						/>
@@ -572,17 +547,19 @@ function WidgetEditor() {
 								borderRadius: border_radius + "px",
 								backgroundColor: "#" + backgroundColor,
 							}}
-							textColor={{ color: "#" + fontColor }}
+							textColor={"#" + textColor}
 						/>
 					</div>
 				</div>
 				<Button
 					className="!w-full"
 					text="Copy Link"
-					onClick={(e) => {
-						document
-							.getElementById("status-thingy")
-							.classList.remove("hidden");
+					onClick={(e: any) => {
+						if (document.getElementById("status-thingy")) {
+							document
+								.getElementById("status-thingy")!
+								.classList.remove("hidden");
+						}
 						navigator.clipboard.writeText(
 							window.location.origin + "/widget?" + searchParams
 						);

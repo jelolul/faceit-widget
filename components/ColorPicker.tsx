@@ -6,7 +6,6 @@ const ColorPicker = (props: any) => {
 				id={props.id}
 				type="color"
 				value={props.value}
-				defaultValue={props.defaultValue}
 				onBlur={props.onBlur}
 				onInput={props.onInput}
 			/>
@@ -16,7 +15,6 @@ const ColorPicker = (props: any) => {
 				maxLength={7}
 				type="text"
 				className="color-picker-input"
-				defaultValue={props.defaultValue}
 				value={props.value}
 				onInput={props.onInput}
 			/>
