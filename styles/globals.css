@@ -191,7 +191,7 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	align-items: center;
 	gap: 3px;
 	padding-left: 3px;
-	padding-right: 3px;
+	padding-right: 10px;
 	/* max-width: 90px; */
 	min-width: auto;
 }
@@ -211,10 +211,6 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	align-items: center;
 	gap: 3px;
 	min-width: auto;
-}
-
-#stats:last-child {
-	padding-right: 10px;
 }
 
 .mdi--globe {
