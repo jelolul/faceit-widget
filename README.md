@@ -12,10 +12,10 @@
 
 1. Go to https://faceit-widget.vercel.app/
 2. Enter your FACEIT Nickname & change the styling (optional)
-3. Press the big `COPY LINK` button
+3. Press the big `GENERATE LINK` button
 4. Use these settings for OBS Studio **(recommended):**
-- Width: 85
-- Height: 35
+- Width: 300px (some options might make the widget bigger but 300px is the max)
+- Height: 98px
 
 ## <p align="center">Widget Previews</p>
 
