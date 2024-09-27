@@ -28,6 +28,6 @@
 		"**/*.ts",
 		"**/*.tsx",
 		"./src/**/*.ts"
-	],
+, "app/(no-layout)/widget/loading.jsx"	],
 	"exclude": ["node_modules"]
 }
