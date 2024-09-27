@@ -24,14 +24,21 @@ interface DropdownOptions {
 	name: string;
 }
 
+const gameOptions: DropdownOptions[] = [{ id: 1, name: "CS2" }];
+
 const displayKDOptions: DropdownOptions[] = [
-	{ id: 1, name: "false" },
-	{ id: 2, name: "true" },
+	{ id: 1, name: "hide" },
+	{ id: 2, name: "show" },
 ];
 
 const displayRankingOptions: DropdownOptions[] = [
-	{ id: 1, name: "false" },
-	{ id: 2, name: "true" },
+	{ id: 1, name: "hide" },
+	{ id: 2, name: "show" },
+];
+
+const displayLastTwentyStatsOptions: DropdownOptions[] = [
+	{ id: 1, name: "hide" },
+	{ id: 2, name: "show" },
 ];
 
 function WidgetEditor() {
@@ -39,13 +46,24 @@ function WidgetEditor() {
 	const router = useRouter();
 	const pathname = usePathname();
 
+	const [data, setData] = useState();
+	const [elo, setElo] = useState("----");
+	const [level, setLevel] = useState("0");
+	const [region, setRegion] = useState();
+
+	const [playerStats, setPlayerStats] = useState();
+	const [playerLastTwentyStats, setPlayerLastTwentyStats] = useState();
+	const [playerRankingData, setPlayerRankingData] = useState();
+	const [playerRanking, setPlayerRanking] = useState("----");
+	const [avgKD, setAvgKD] = useState("-.--");
+
 	const [nickname, setNickname] = useState("");
 	const [border_radius, setBorderRadius] = useState("24");
 	const [backgroundColor, setBackgroundColor] = useState("1f1f22");
 	const [textColor, setTextColor] = useState("ffffff");
-	const [data, setData] = useState();
-	const [elo, setElo] = useState("100");
-	const [level, setLevel] = useState("1");
+
+	var [games, setGame] = useState<DropdownOptions>(gameOptions[0]);
+
 	var [displayKD, setDisplayKD] = useState<DropdownOptions>(
 		displayKDOptions[0]
 	);
@@ -54,20 +72,28 @@ function WidgetEditor() {
 		displayRankingOptions[0]
 	);
 
-	const [playerStats, setPlayerStats] = useState();
-	const [playerRankingData, setPlayerRankingData] = useState();
-	const [playerRanking, setPlayerRanking] = useState("--");
-	const [avgKD, setAvgKD] = useState("1.00");
+	var [displayLastTwenty, setDisplayLastTwenty] = useState<DropdownOptions>(
+		displayLastTwentyStatsOptions[0]
+	);
 
+	const nicknameParam = searchParams.get("nickname");
 	const backgroundParam = searchParams.get("background-color");
 	const colorParam = searchParams.get("text-color");
 	const borderRadiusParam = searchParams.get("border-radius");
-	const nicknameParam = searchParams.get("nickname");
 	const displayKDParam = searchParams.get("show-kd");
 	const displayRankingParam = searchParams.get("show-ranking");
+	const displayLastTwentyMatchesParam = searchParams.get("show-last-20");
 
 	useEffect(() => {
 		const updateStates = () => {
+			// if (gameParam) {
+			// 	setGame(gameOptions[gameParam === "true" ? 1 : 0]);
+			// }
+
+			if (nicknameParam) {
+				setNickname(nicknameParam);
+			}
+
 			if (backgroundParam) {
 				setBackgroundColor(backgroundParam);
 			}
@@ -80,10 +106,6 @@ function WidgetEditor() {
 				setBorderRadius(borderRadiusParam);
 			}
 
-			if (nicknameParam) {
-				setNickname(nicknameParam);
-			}
-
 			if (displayKDParam) {
 				setDisplayKD(
 					displayKDOptions[displayKDParam === "true" ? 1 : 0]
@@ -94,6 +116,14 @@ function WidgetEditor() {
 				setDisplayRanking(
 					displayRankingOptions[
 						displayRankingParam === "true" ? 1 : 0
+					]
+				);
+			}
+
+			if (displayLastTwentyMatchesParam) {
+				setDisplayLastTwenty(
+					displayLastTwentyStatsOptions[
+						displayLastTwentyMatchesParam === "true" ? 1 : 0
 					]
 				);
 			}
@@ -121,6 +151,19 @@ function WidgetEditor() {
 				if (playerStats.lifetime) {
 					setAvgKD(playerStats.lifetime["Average K/D Ratio"]);
 				}
+			});
+	}
+
+	function getLastTwentyStatsData(player_id: any) {
+		fetch(
+			"https://open.faceit.com/data/v4/players/" +
+				player_id +
+				"/games/cs2/stats",
+			{ headers, method: "GET" }
+		)
+			.then((res) => res.json())
+			.then((playerLastTwentyStats) => {
+				setPlayerLastTwentyStats(playerLastTwentyStats);
 			});
 	}
 
@@ -156,6 +199,7 @@ function WidgetEditor() {
 					setLevel(data.games.cs2.skill_level);
 					getStatsData(data.player_id);
 					getPlayerRanking(data.player_id, data.games.cs2.region);
+					getLastTwentyStatsData(data.player_id);
 				}
 			});
 	}
@@ -182,350 +226,554 @@ function WidgetEditor() {
 	return (
 		<section className="content">
 			<div className="widget-editor-content">
-				<div className="heading">
-					Create your own FACEIT Widget
-					<span id="status">BETA</span>
-				</div>
 				<div className="editor">
 					<div className="widget-editor">
-						<div className="section">
-							<div className="setting">
-								<div className="truncate setting-label">
-									FACEIT Nickname
-									{/* <span className="tooltip-text">Case-Sensitive</span> */}
-								</div>
-								<div className="flex">
-									<input
-										type="text"
-										id="faceit-nickname"
-										placeholder="FrozenBag"
-										onBlur={(e) => {
-											setNickname(
-												searchParams.get("nickname") ||
-													"FrozenBag"
-											);
-										}}
-										onKeyDown={(e) => {
-											if (e.key === "Enter") {
-												setNickname(
-													searchParams.get(
+						<div className="sections-container size-full">
+							<div className="sections">
+								<div className="section-label">General</div>
+								<div className="section">
+									<div className="setting">
+										<div className="truncate setting-label">
+											FACEIT Nickname
+											{/* <span className="tooltip-text">Case-Sensitive</span> */}
+										</div>
+										<div className="flex">
+											<input
+												type="text"
+												id="faceit-nickname"
+												placeholder="FrozenBag"
+												onBlur={(e) => {
+													setNickname(
+														searchParams.get(
+															"nickname"
+														) || "FrozenBag"
+													);
+												}}
+												onKeyDown={(e) => {
+													if (e.key === "Enter") {
+														setNickname(
+															searchParams.get(
+																"nickname"
+															) || "FrozenBag"
+														);
+													}
+												}}
+												onChange={(e) =>
+													update_widget(
+														e.target.value,
 														"nickname"
-													) || "FrozenBag"
-												);
-											}
-										}}
-										onChange={(e) =>
-											update_widget(
-												e.target.value,
-												"nickname"
-											)
-										}
-									/>
-									{/* <Button className="!h-[35px] !leading-[12px] !w-10 !ml-1 !rounded-[4px] !px-0 !text-[16px]" onClick={e => { setNickname(searchParams.get('nickname')); }} text="S" /> */}
-								</div>
-							</div>
-							<div className="w-full">
-								<div className="truncate setting-label">
-									Game
-									{/* <span className="tooltip-text">
+													)
+												}
+											/>
+											{/* <Button className="!h-[35px] !leading-[12px] !w-10 !ml-1 !rounded-[4px] !px-0 !text-[16px]" onClick={e => { setNickname(searchParams.get('nickname')); }} text="S" /> */}
+										</div>
+									</div>
+									<div className="w-full">
+										<div className="truncate setting-label">
+											Game
+											{/* <span className="tooltip-text">
 										Currently only supports CS2, as that's{" "}
 										<b>AFAIK</b> the only game that supports
 										matchmaking. <b>(where ELO changes)</b>
 									</span> */}
-								</div>
-								<Tooltip
-									text="
+										</div>
+										<Tooltip
+											text="
 										Currently only CS2 is supported."
-								>
-									<select
-										name="game"
-										className="w-full"
-										id="game-dropdown"
-										disabled
-									>
-										<option defaultValue="cs2">CS2</option>
-									</select>
-								</Tooltip>
-							</div>
-							<div className="w-full">
-								<div className="truncate setting-label">
-									Background Color
-								</div>
-								<div className="container flex">
-									<ColorPicker
-										onBlur={(e: any) => {
-											update_widget(
-												e.target.value.replace("#", ""),
-												"background-color"
-											);
-										}}
-										onInput={(e: any) => {
-											setBackgroundColor(
-												e.target.value.replace("#", "")
-											);
-										}}
-										className="w-full"
-										name="widget-background-color"
-										id="background-color"
-										value={`#${backgroundColor}`}
-									/>
-									<Button
-										onClick={(e: any) => {
-											update_widget(
-												"1f1f22",
-												"background-color"
-											);
-											setBackgroundColor("1f1f22");
-										}}
-										className="default-button"
-									/>
-								</div>
-							</div>
-							<div className="w-full">
-								<div className="truncate setting-label">
-									Text Color
-								</div>
-								<div className="container flex">
-									<ColorPicker
-										onBlur={(e: any) => {
-											update_widget(
-												e.target.value.replace("#", ""),
-												"text-color"
-											);
-										}}
-										onInput={(e: any) => {
-											setTextColor(
-												e.target.value.replace("#", "")
-											);
-										}}
-										className="w-full"
-										name="widget-text-color"
-										id="text-color"
-										value={`#${textColor}`}
-									/>
-									<Button
-										onClick={(e: any) => {
-											update_widget(
-												"ffffff",
-												"text-color"
-											);
-											setTextColor("ffffff");
-										}}
-										className="default-button"
-									/>
-								</div>
-							</div>
-							<div className="setting">
-								<div className="truncate setting-label">
-									Border Radius
-								</div>
-								<div className="container flex">
-									<input
-										type="number"
-										onInput={(e) => {
-											update_widget(
-												e.currentTarget.value,
-												"border-radius"
-											);
-											setBorderRadius(
-												e.currentTarget.value
-											);
-										}}
-										className="w-full"
-										name="widget-border-radius"
-										id="border-radius"
-										min="0"
-										max="24"
-										value={`${border_radius}`}
-									/>
-									<Button
-										onClick={(e: any) => {
-											update_widget(
-												"24",
-												"border-radius"
-											);
-											setBorderRadius("24");
-										}}
-										className="default-button"
-									/>
-								</div>
-							</div>
-						</div>
-						<span
-							id="status"
-							className="!bg-primary !m-0 !py-[2px] w-max h-min !mb-[-5px] !rounded-md"
-						>
-							NEW OPTIONS
-						</span>
-						<div className="section new">
-							<div className="setting">
-								<div className="truncate setting-label gap-2 flex">
-									Show Average KDR
-								</div>
-								<div className="container flex">
-									<Listbox
-										value={displayKD}
-										onChange={(e) => {
-											update_widget(
-												e.name === "true"
-													? true
-													: false,
-												"show-kd"
-											);
-											setDisplayKD(
-												displayKDOptions[
-													e.name === "true" ? 1 : 0
-												]
-											);
-										}}
-									>
-										<ListboxButton
-											className={clsx(
-												"text-[16px] flex text-left dropdown-button capitalize w-full"
-											)}
 										>
-											<div className="w-full pl-[3px]">
-												{displayKD.name}
-											</div>
-											<div
-												className="size-[20px]"
-												style={{
-													backgroundImage: `url(${"assets/icons/arrow-down.svg"})`,
-													backgroundSize: "contain",
-													backgroundPosition:
-														"center",
-													backgroundRepeat:
-														"no-repeat",
+											<Listbox
+												value={games}
+												onChange={(e) => {
+													update_widget(
+														e.name === "true"
+															? true
+															: false,
+														"game"
+													);
+													setGame(
+														gameOptions[
+															e.name === "true"
+																? 1
+																: 0
+														]
+													);
 												}}
-											></div>
-										</ListboxButton>
-										<ListboxOptions
-											className={clsx(
-												"w-[var(--button-width)] mt-[5px] [--anchor-gap:var(--spacing-1)] focus:outline-none",
-												"transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0 flex flex-col gap-[2px] overflow-hidden z-10 dropdown-menu"
-											)}
-											anchor="bottom"
-										>
-											{displayKDOptions.map(
-												(displayKDOptions) => (
-													<ListboxOption
-														key={
-															displayKDOptions.id
-														}
-														value={displayKDOptions}
-														className="select-none text-[16px] px-[12px] py-[6px] capitalize text-left content-center dropdown-option"
-														data-focus
-													>
-														{displayKDOptions.name}
-													</ListboxOption>
-												)
-											)}
-										</ListboxOptions>
-									</Listbox>
+											>
+												<ListboxButton
+													disabled
+													className={clsx(
+														"text-[16px] flex text-left dropdown-button capitalize w-full disabled:!opacity-50"
+													)}
+												>
+													<div className="w-full pl-[3px]">
+														{games.name}
+													</div>
+													<div
+														className="size-[20px]"
+														style={{
+															backgroundImage: `url(${"assets/icons/arrow-down.svg"})`,
+															backgroundSize:
+																"contain",
+															backgroundPosition:
+																"center",
+															backgroundRepeat:
+																"no-repeat",
+														}}
+													></div>
+												</ListboxButton>
+												<ListboxOptions
+													className={clsx(
+														"w-[var(--button-width)] mt-[5px] [--anchor-gap:var(--spacing-1)] focus:outline-none",
+														"transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0 flex flex-col gap-[2px] overflow-hidden z-10 dropdown-menu"
+													)}
+													anchor="bottom"
+												>
+													{gameOptions.map(
+														(gameOptions) => (
+															<ListboxOption
+																key={
+																	gameOptions.id
+																}
+																value={
+																	gameOptions
+																}
+																className="select-none text-[16px] px-[12px] py-[6px] capitalize text-left content-center dropdown-option"
+																data-focus
+															>
+																{
+																	gameOptions.name
+																}
+															</ListboxOption>
+														)
+													)}
+												</ListboxOptions>
+											</Listbox>
+										</Tooltip>
+									</div>
+								</div>
+								<div className="section-label">Appearance</div>
+								<div className="section">
+									<div className="w-full">
+										<div className="truncate setting-label">
+											Background Color
+										</div>
+										<div className="container flex">
+											<ColorPicker
+												onBlur={(e: any) => {
+													update_widget(
+														e.target.value.replace(
+															"#",
+															""
+														),
+														"background-color"
+													);
+												}}
+												onInput={(e: any) => {
+													setBackgroundColor(
+														e.target.value.replace(
+															"#",
+															""
+														)
+													);
+												}}
+												className="w-full"
+												name="widget-background-color"
+												id="background-color"
+												value={`#${backgroundColor}`}
+											/>
+											<Button
+												onClick={(e: any) => {
+													update_widget(
+														"1f1f22",
+														"background-color"
+													);
+													setBackgroundColor(
+														"1f1f22"
+													);
+												}}
+												className="defaults-button"
+											/>
+										</div>
+									</div>
+									<div className="w-full">
+										<div className="truncate setting-label">
+											Text Color
+										</div>
+										<div className="container flex">
+											<ColorPicker
+												onBlur={(e: any) => {
+													update_widget(
+														e.target.value.replace(
+															"#",
+															""
+														),
+														"text-color"
+													);
+												}}
+												onInput={(e: any) => {
+													setTextColor(
+														e.target.value.replace(
+															"#",
+															""
+														)
+													);
+												}}
+												className="w-full"
+												name="widget-text-color"
+												id="text-color"
+												value={`#${textColor}`}
+											/>
+											<Button
+												onClick={(e: any) => {
+													update_widget(
+														"ffffff",
+														"text-color"
+													);
+													setTextColor("ffffff");
+												}}
+												className="defaults-button"
+											/>
+										</div>
+									</div>
+									<div className="setting">
+										<div className="truncate setting-label">
+											Border Radius
+										</div>
+										<div className="container flex">
+											<div className="pxUnit">
+												<input
+													type="number"
+													onInput={(e) => {
+														update_widget(
+															e.currentTarget
+																.value,
+															"border-radius"
+														);
+														setBorderRadius(
+															e.currentTarget
+																.value
+														);
+													}}
+													className="w-full"
+													name="widget-border-radius"
+													id="border-radius"
+													min="0"
+													max="24"
+													value={`${border_radius}`}
+												/>
+											</div>
+											<Button
+												onClick={(e: any) => {
+													update_widget(
+														"24",
+														"border-radius"
+													);
+													setBorderRadius("24");
+												}}
+												className="defaults-button"
+											/>
+										</div>
+									</div>
+								</div>
+								<div className="section-label">Display</div>
+								<div className="section">
+									<div className="setting">
+										<div className="truncate setting-label gap-2 flex">
+											Average KDR
+										</div>
+										<div className="container flex">
+											<Listbox
+												value={displayKD}
+												onChange={(e) => {
+													update_widget(
+														e.name === "show"
+															? true
+															: false,
+														"show-kd"
+													);
+													setDisplayKD(
+														displayKDOptions[
+															e.name === "show"
+																? 1
+																: 0
+														]
+													);
+												}}
+											>
+												<ListboxButton
+													className={clsx(
+														"text-[16px] flex text-left dropdown-button capitalize w-full"
+													)}
+												>
+													<div className="w-full pl-[3px]">
+														{displayKD.name}
+													</div>
+													<div
+														className="size-[20px]"
+														style={{
+															backgroundImage: `url(${"assets/icons/arrow-down.svg"})`,
+															backgroundSize:
+																"contain",
+															backgroundPosition:
+																"center",
+															backgroundRepeat:
+																"no-repeat",
+														}}
+													></div>
+												</ListboxButton>
+												<ListboxOptions
+													className={clsx(
+														"w-[var(--button-width)] mt-[5px] [--anchor-gap:var(--spacing-1)] focus:outline-none",
+														"transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0 flex flex-col gap-[2px] overflow-hidden z-10 dropdown-menu"
+													)}
+													anchor="bottom"
+												>
+													{displayKDOptions.map(
+														(displayKDOptions) => (
+															<ListboxOption
+																key={
+																	displayKDOptions.id
+																}
+																value={
+																	displayKDOptions
+																}
+																className="select-none text-[16px] px-[12px] py-[6px] capitalize text-left content-center dropdown-option"
+																data-focus
+															>
+																{
+																	displayKDOptions.name
+																}
+															</ListboxOption>
+														)
+													)}
+												</ListboxOptions>
+											</Listbox>
 
-									<Button
-										onClick={(e: any) => {
-											update_widget("false", "show-kd");
-											setDisplayKD(displayKDOptions[0]);
-										}}
-										className="default-button"
-									/>
-								</div>
-							</div>
-							<div className="setting">
-								<div className="truncate setting-label gap-2 flex">
-									{/* <span
-										id="status"
-										className="!bg-primary !m-0 !py-[2px] h-min !mb-[8px]"
-									>
-										NEW
-									</span> */}
-									Show World Ranking
-								</div>
-								<div className="container flex">
-									<Listbox
-										value={displayRanking}
-										onChange={(e) => {
-											update_widget(
-												e.name === "true"
-													? true
-													: false,
-												"show-ranking"
-											);
-											setDisplayRanking(
-												displayRankingOptions[
-													e.name === "true" ? 1 : 0
-												]
-											);
-										}}
-									>
-										<ListboxButton
-											className={clsx(
-												"text-[16px] flex text-left dropdown-button capitalize w-full"
-											)}
-										>
-											<div className="w-full pl-[3px]">
-												{displayRanking.name}
-											</div>
-											<div
-												className="size-[20px]"
-												style={{
-													backgroundImage: `url(${"assets/icons/arrow-down.svg"})`,
-													backgroundSize: "contain",
-													backgroundPosition:
-														"center",
-													backgroundRepeat:
-														"no-repeat",
+											<Button
+												onClick={(e: any) => {
+													update_widget(
+														"false",
+														"show-kd"
+													);
+													setDisplayKD(
+														displayKDOptions[0]
+													);
 												}}
-											></div>
-										</ListboxButton>
-										<ListboxOptions
-											className={clsx(
-												"w-[var(--button-width)] mt-[5px] [--anchor-gap:var(--spacing-1)] focus:outline-none",
-												"transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0 flex flex-col gap-[2px] overflow-hidden z-10 dropdown-menu"
-											)}
-											anchor="bottom"
-										>
-											{displayKDOptions.map(
-												(displayRankingOptions) => (
-													<ListboxOption
-														key={
-															displayRankingOptions.id
-														}
-														value={
+												className="defaults-button"
+											/>
+										</div>
+									</div>
+									<div className="setting">
+										<div className="truncate setting-label gap-2 flex">
+											World Ranking
+										</div>
+										<div className="container flex">
+											<Listbox
+												value={displayRanking}
+												onChange={(e) => {
+													update_widget(
+														e.name === "show"
+															? true
+															: false,
+														"show-ranking"
+													);
+													setDisplayRanking(
+														displayRankingOptions[
+															e.name === "show"
+																? 1
+																: 0
+														]
+													);
+												}}
+											>
+												<ListboxButton
+													className={clsx(
+														"text-[16px] flex text-left dropdown-button capitalize w-full"
+													)}
+												>
+													<div className="w-full pl-[3px]">
+														{displayRanking.name}
+													</div>
+													<div
+														className="size-[20px]"
+														style={{
+															backgroundImage: `url(${"assets/icons/arrow-down.svg"})`,
+															backgroundSize:
+																"contain",
+															backgroundPosition:
+																"center",
+															backgroundRepeat:
+																"no-repeat",
+														}}
+													></div>
+												</ListboxButton>
+												<ListboxOptions
+													className={clsx(
+														"w-[var(--button-width)] mt-[5px] [--anchor-gap:var(--spacing-1)] focus:outline-none",
+														"transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0 flex flex-col gap-[2px] overflow-hidden z-10 dropdown-menu"
+													)}
+													anchor="bottom"
+												>
+													{displayRankingOptions.map(
+														(
 															displayRankingOptions
-														}
-														className="select-none text-[16px] px-[12px] py-[6px] capitalize text-left content-center dropdown-option"
-														data-focus
-													>
-														{
-															displayRankingOptions.name
-														}
-													</ListboxOption>
-												)
-											)}
-										</ListboxOptions>
-									</Listbox>
+														) => (
+															<ListboxOption
+																key={
+																	displayRankingOptions.id
+																}
+																value={
+																	displayRankingOptions
+																}
+																className="select-none text-[16px] px-[12px] py-[6px] capitalize text-left content-center dropdown-option"
+																data-focus
+															>
+																{
+																	displayRankingOptions.name
+																}
+															</ListboxOption>
+														)
+													)}
+												</ListboxOptions>
+											</Listbox>
 
-									<Button
-										onClick={(e: any) => {
-											update_widget(
-												"false",
-												"show-ranking"
-											);
-											setDisplayRanking(
-												displayRankingOptions[0]
-											);
-										}}
-										className="default-button"
-									/>
+											<Button
+												onClick={(e: any) => {
+													update_widget(
+														"false",
+														"show-ranking"
+													);
+													setDisplayRanking(
+														displayRankingOptions[0]
+													);
+												}}
+												className="defaults-button"
+											/>
+										</div>
+									</div>
+									<div className="setting">
+										<div className="truncate setting-label gap-1 flex">
+											<span
+												id="status"
+												className="!bg-primary !py-[2px] !m-0 w-max h-min !rounded-sm text-shadow-xl"
+											>
+												NEW
+											</span>
+											Last 20 Matches Stats
+										</div>
+										<div className="container flex">
+											<Listbox
+												value={displayLastTwenty}
+												onChange={(e) => {
+													update_widget(
+														e.name === "show"
+															? true
+															: false,
+														"show-last-20"
+													);
+													setDisplayLastTwenty(
+														displayLastTwentyStatsOptions[
+															e.name === "show"
+																? 1
+																: 0
+														]
+													);
+												}}
+											>
+												<ListboxButton
+													className={clsx(
+														"text-[16px] flex text-left dropdown-button capitalize w-full"
+													)}
+												>
+													<div className="w-full pl-[3px]">
+														{displayLastTwenty.name}
+													</div>
+													<div
+														className="size-[20px]"
+														style={{
+															backgroundImage: `url(${"assets/icons/arrow-down.svg"})`,
+															backgroundSize:
+																"contain",
+															backgroundPosition:
+																"center",
+															backgroundRepeat:
+																"no-repeat",
+														}}
+													></div>
+												</ListboxButton>
+												<ListboxOptions
+													className={clsx(
+														"w-[var(--button-width)] mt-[5px] [--anchor-gap:var(--spacing-1)] focus:outline-none",
+														"transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0 flex flex-col gap-[2px] overflow-hidden z-10 dropdown-menu"
+													)}
+													anchor="bottom"
+												>
+													{displayLastTwentyStatsOptions.map(
+														(
+															displayLastTwentyStatsOptions
+														) => (
+															<ListboxOption
+																key={
+																	displayLastTwentyStatsOptions.id
+																}
+																value={
+																	displayLastTwentyStatsOptions
+																}
+																className="select-none text-[16px] px-[12px] py-[6px] capitalize text-left content-center dropdown-option"
+																data-focus
+															>
+																{
+																	displayLastTwentyStatsOptions.name
+																}
+															</ListboxOption>
+														)
+													)}
+												</ListboxOptions>
+											</Listbox>
+
+											<Button
+												onClick={(e: any) => {
+													update_widget(
+														"false",
+														"show-last-20"
+													);
+													setDisplayLastTwenty(
+														displayLastTwentyStatsOptions[0]
+													);
+												}}
+												className="defaults-button"
+											/>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
+						<Status
+							id="status-thingy"
+							text="Copied link!"
+							className="hidden"
+						/>
+						<Button
+							className="!text-[20px] !w-full !h-max self-center !max-w-full !shadow-none"
+							text="Generate Link"
+							onClick={(e: any) => {
+								if (document.getElementById("status-thingy")) {
+									document
+										.getElementById("status-thingy")!
+										.classList.remove("hidden");
+								}
+								navigator.clipboard.writeText(
+									window.location.origin +
+										"/widget?" +
+										searchParams
+								);
+							}}
+						/>
 					</div>
+
 					<div className="widget-preview">
 						<Image
-							className="size-full blur-[2px] grayscale-[5%] pointer-events-none -z-10"
+							className="size-max blur-[2px] grayscale-[0%] pointer-events-none -z-10"
 							style={{
 								scale: "250%",
 							}}
@@ -536,40 +784,23 @@ function WidgetEditor() {
 							objectPosition="center"
 						/>
 						<Widget
-							src={`https://cdn-frontend.faceit.com/web/960/src/app/assets/images-compress/skill-icons/skill_level_${level}_svg.svg`}
+							level={level}
 							elo={elo}
 							avgKd={avgKD}
 							displayKD={displayKDParam}
 							playerRanking={playerRanking}
 							displayRanking={displayRankingParam}
+							displayLastTwentyMatches={
+								displayLastTwentyMatchesParam
+							}
+							lastTwentyStats={playerLastTwentyStats}
 							className=""
-							style={{
-								borderRadius: border_radius + "px",
-								backgroundColor: "#" + backgroundColor,
-							}}
-							textColor={"#" + textColor}
+							borderRadius={borderRadiusParam + "px"}
+							backgroundColor={"#" + backgroundParam}
+							textColor={`#${colorParam}`}
 						/>
 					</div>
 				</div>
-				<Button
-					className="!w-full"
-					text="Copy Link"
-					onClick={(e: any) => {
-						if (document.getElementById("status-thingy")) {
-							document
-								.getElementById("status-thingy")!
-								.classList.remove("hidden");
-						}
-						navigator.clipboard.writeText(
-							window.location.origin + "/widget?" + searchParams
-						);
-					}}
-				/>
-				<Status
-					id="status-thingy"
-					text="Copied link!"
-					className="hidden"
-				/>
 			</div>
 		</section>
 	);
