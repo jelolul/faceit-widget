@@ -6,34 +6,6 @@ import Markdown from "react-markdown";
 import Loading from "../../loading";
 import { Suspense } from "react";
 import rehypeRaw from "rehype-raw";
-import { Metadata, ResolvingMetadata } from "next";
-
-// export async function generateMetadata(
-// 	{ params }: { params: { slug: string } },
-// 	parent: ResolvingMetadata
-// ): Promise<Metadata> {
-// 	const articleData = await getArticleData(params.slug);
-// 	// read route params
-// 	// const id = articleData.id;
-
-// 	// fetch data
-// 	// const product = await fetch(`https://.../${id}`).then((res) => res.json());
-
-// 	// optionally access and extend (rather than replace) parent metadata
-// 	// const previousImages = (await parent).openGraph?.images || [];
-
-// 	return {
-// 		title: `${articleData.title}`,
-// 		description: `${articleData.description}`,
-// 		openGraph: {
-// 			title: `${articleData.title}`,
-// 			description: `${articleData.description}`,
-// 			images: ["assets/images/social.png"],
-// 			siteName: "Overwatch Widget",
-// 			url: `/news/${articleData.id}`,
-// 		},
-// 	};
-// }
 
 const Article = async ({ params }: { params: { slug: string } }) => {
 	const articleData = await getArticleData(params.slug);
