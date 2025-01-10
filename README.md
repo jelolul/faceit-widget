@@ -2,7 +2,7 @@
 
 <p align="center">Displays your FACEIT level and ELO on supported games in a customizable widget.</p>
 
-<p align="center"><a href="https://ko-fi.com/L3L565L7Y)"><img src="https://ko-fi.com/img/githubbutton_sm.svg"></a>
+<p align="center"><a href="https://ko-fi.com/L3L565L7Y"><img src="https://ko-fi.com/img/githubbutton_sm.svg"></a>
 
 #
 
