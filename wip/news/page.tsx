@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import ArticleItemList from "@/components/ArticleListItem";
-import Loading from "../loading";
+import Loading from "../../app/(main)/loading";
 
 export default function ReleaseNotes() {
 	const [articles, setArticles] = useState<any[]>([]);
