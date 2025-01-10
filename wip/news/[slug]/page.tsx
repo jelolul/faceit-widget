@@ -3,7 +3,7 @@ import { ArrowLeftIcon, LinkIcon } from "@heroicons/react/24/solid";
 import { FaXTwitter, FaTwitch } from "react-icons/fa6";
 import { getArticleData } from "@/lib/articles";
 import Markdown from "react-markdown";
-import Loading from "../../loading";
+import Loading from "../../../app/(main)/loading";
 import { Suspense } from "react";
 import rehypeRaw from "rehype-raw";
 
