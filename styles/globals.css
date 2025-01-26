@@ -225,6 +225,12 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	-webkit-user-drag: none;
 }
 
+img {
+	-webkit-user-drag: none;
+	-webkit-user-select: none;
+	pointer-events: none;
+}
+
 #level-pic > circle {
 	display: none;
 }
@@ -271,6 +277,10 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	/* max-width: 90px; */
 	max-width: 300px;
 	min-width: auto;
+}
+
+.widget-2x-zoom {
+	transform: scale(2);
 }
 
 .wrapper {

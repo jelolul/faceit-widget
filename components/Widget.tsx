@@ -60,7 +60,7 @@ export default function Widget(props: any) {
 			: calculateAverages(props.lastTwentyStats.items);
 
 	return (
-		<div className="wrapper">
+		<div className={props.className + ` wrapper`}>
 			<div
 				id="widget"
 				style={{
@@ -193,13 +193,16 @@ export default function Widget(props: any) {
 								>
 									{lastTwentyAverages === undefined
 										? "--"
-										: lastTwentyAverages["Kills"].toFixed()}
+										: lastTwentyAverages["Kills"].toFixed(
+												1
+										  )}
 									{"/"}
 									{lastTwentyAverages === undefined
 										? "--"
 										: lastTwentyAverages[
 												"Headshots %"
 										  ].toFixed()}
+									%
 								</div>
 								<div
 									style={{
@@ -233,7 +236,6 @@ export default function Widget(props: any) {
 										: lastTwentyAverages[
 												"K/R Ratio"
 										  ].toFixed(2)}
-									%
 								</div>
 								<div
 									style={{
