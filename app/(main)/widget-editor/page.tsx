@@ -773,7 +773,7 @@ function WidgetEditor() {
 
 					<div className="widget-preview">
 						<Image
-							className="size-max blur-[2px] grayscale-[0%] pointer-events-none -z-10"
+							className="size-max blur-[0.5rem] grayscale-[0%] pointer-events-none -z-10"
 							style={{
 								scale: "250%",
 							}}
@@ -794,7 +794,7 @@ function WidgetEditor() {
 								displayLastTwentyMatchesParam
 							}
 							lastTwentyStats={playerLastTwentyStats}
-							className=""
+							className="widget-2x-zoom"
 							borderRadius={borderRadiusParam + "px"}
 							backgroundColor={"#" + backgroundParam}
 							textColor={`#${colorParam}`}
