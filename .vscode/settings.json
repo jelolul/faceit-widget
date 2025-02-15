@@ -1,3 +1,4 @@
 {
-    "workbench.iconTheme": "vscode-icons"
+	"workbench.iconTheme": "vscode-icons",
+	"markdown.validate.enabled": true
 }
