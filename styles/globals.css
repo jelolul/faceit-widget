@@ -5,21 +5,16 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-	width: 100vw;
-}
-
 html,
 body {
-	overflow-x: hidden;
+	height: 100svh;
+	background-color: #1f1f1f;
 }
 
 body {
 	position: relative;
-	width: 100vw;
-	height: 100vh;
-	min-height: 100%;
 	margin: 0;
+	@apply selection:bg-primary selection:text-color-primary;
 }
 
 ::-webkit-scrollbar {
@@ -59,9 +54,6 @@ body {
 }
 
 .main {
-	width: 100vw;
-	height: 100vh;
-	position: fixed;
 	display: flex;
 	justify-content: center;
 	pointer-events: none;
@@ -77,6 +69,11 @@ input[type="text"],
 select,
 .dropdown-button {
 	@apply w-full h-[35px] bg-gray-300 focus:outline-none border border-[#ffffff0a] rounded-[4px] p-[7px] text-[14px] placeholder:text-color-secondary;
+}
+
+input[type="number"],
+input[type="text"] {
+	@apply text-[16px];
 }
 
 input {
@@ -150,30 +147,7 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 }
 
 .defaults-button {
-	@apply !h-[35px] !leading-[12px] !w-8 !ml-1 !rounded-[4px] !px-0 !text-[16px] after:inline-block after:bg-[url('/assets/icons/history.svg')] after:size-[16px] after:mt-[-3px] after:bg-cover border border-[#ffffff31] !bg-red-600 !shadow-none hover:!bg-red-500;
-}
-
-.sections {
-	@apply p-4 m-[-0.5rem] flex flex-col gap-2 overflow-x-clip overflow-y-auto h-full mb-[2px];
-}
-
-.section {
-	@apply flex flex-col border-b border-white/10 pb-4;
-	grid-template-columns: repeat(2, 1fr);
-	grid-template-rows: repeat(2, 0fr);
-	row-gap: 10px;
-	column-gap: 10px;
-}
-
-.section:last-of-type {
-	@apply !border-b-0;
-}
-
-.section-label {
-	@apply font-bold text-[12px];
-	user-select: none;
-	-webkit-user-drag: none;
-	-webkit-user-select: none;
+	@apply w-min h-min !text-[14px] flex items-center !rounded-none py-1 px-1 after:inline-block after:bg-[url('/assets/icons/history.svg')] after:size-[16px] after:bg-contain after:bg-center !bg-transparent !shadow-none opacity-40 hover:opacity-100 transition-opacity;
 }
 
 .tooltip-container {
@@ -217,6 +191,7 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 	user-select: none;
 	-webkit-user-drag: none;
 	-webkit-user-select: none;
+	@apply flex flex-row gap-1.5 pb-1;
 }
 
 #level-pic {
@@ -317,7 +292,7 @@ img {
 }
 
 .content {
-	height: 100vh;
+	height: 100%;
 	width: 100%;
 	display: flex;
 	justify-content: center;
@@ -356,16 +331,31 @@ img {
 	}
 }
 
+.sections {
+	@apply p-4 m-[-0.5rem] flex flex-col gap-2 overflow-y-auto flex-grow min-h-0 mb-[2px];
+}
+
+.section {
+	@apply flex flex-col gap-[10px] border-b border-white/10 pb-4;
+}
+
+.section:last-of-type {
+	@apply !border-b-0;
+}
+
+.section-label {
+	@apply font-bold text-[12px];
+	user-select: none;
+	-webkit-user-drag: none;
+	-webkit-user-select: none;
+}
+
 .widget-editor {
 	@apply flex flex-col p-2 border-r-[1px] border-r-gray-300;
-	/* padding: 10px; */
 	width: 420px;
+	max-height: calc(100svh - 65px);
 	background-color: #1f1f1f;
-	/* display: grid; */
-	grid-template-columns: repeat(2, 1fr);
-	grid-template-rows: repeat(2, 0fr);
 	gap: 10px;
-	/* margin: 5px; */
 }
 
 .widget-preview {
@@ -402,6 +392,10 @@ img {
 	.widget-preview {
 		/* height: 200px; */
 	}
+
+	.widget-2x-zoom {
+		@apply scale-[1.45];
+	}
 }
 
 @media screen and (max-width: 720px) {
@@ -415,13 +409,19 @@ img {
 	.editor {
 		flex-direction: column-reverse;
 		/* width: 400px; */
+		@apply h-full;
 	}
 	.widget-editor {
-		@apply flex flex-col p-2 border-t-[1px] outline-white/40 outline outline-1 !border-none self-center !w-full;
+		max-height: calc(75svh - 65px);
+		@apply flex flex-col p-2 border-t-[1px] outline-white/40 outline outline-1 !border-none self-center !w-full !h-[100svh];
+	}
+
+	.widget-2x-zoom {
+		@apply scale-125;
 	}
 
 	.sections-container {
-		@apply !h-[30em];
+		@apply flex flex-col flex-1 min-h-[200px];
 	}
 
 	.widget-preview {
@@ -512,7 +512,7 @@ img {
 
 .app {
 	font-family: Play, sans-serif;
-	@apply relative z-10 flex items-center flex-col max-w-full h-full px-0 text-color-primary !bg-gray-100;
+	@apply relative z-10 flex items-center flex-col max-w-full h-[100svh] px-0 text-color-primary !bg-gray-100;
 }
 
 @layer base {
@@ -578,4 +578,36 @@ img {
 	body {
 		@apply bg-background text-foreground;
 	}
+}
+
+/* ColorPicker 2.0 */
+
+input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 18px;
+	height: 18px;
+	background: transparent;
+	border: 4px solid rgb(97, 97, 97);
+	box-shadow: 0 0 0 1px #cecece;
+	cursor: pointer;
+	border-radius: 50%;
+}
+input[type="range"]::-moz-range-thumb {
+	width: 18px;
+	height: 18px;
+	cursor: pointer;
+	border-radius: 50%;
+	background: transparent;
+	border: 4px solid rgb(97, 97, 97);
+	box-shadow: 0 0 0 1px #cecece;
+}
+input[type="range"]::-ms-thumb {
+	width: 18px;
+	height: 18px;
+	background: transparent;
+	cursor: pointer;
+	border-radius: 50%;
+	border: 4px solid rgb(97, 97, 97);
+	box-shadow: 0 0 0 1px #cecece;
 }

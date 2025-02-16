@@ -16,6 +16,7 @@ const ColorPicker = (props: any) => {
 				type="text"
 				className="color-picker-input"
 				value={props.value}
+				onBlur={props.onBlur}
 				onInput={props.onInput}
 			/>
 		</div>
