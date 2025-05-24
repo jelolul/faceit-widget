@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Widget from "@components/Widget";
 import Button from "@components/Button";
 import ColorPicker from "@components/ColorPicker";
+
 import Status from "@components/Status";
 import clsx from "clsx";
 
@@ -18,7 +19,6 @@ import {
 	Label,
 } from "@headlessui/react";
 import Tooltip from "@components/Tooltip";
-import ColorPickerAlt from "@components/ColorPickerAlt";
 
 interface DropdownOptions {
 	id: number;
@@ -48,6 +48,7 @@ function WidgetEditor() {
 	const pathname = usePathname();
 
 	const [data, setData] = useState();
+	const [avatar, setAvatar] = useState();
 	const [elo, setElo] = useState("----");
 	const [level, setLevel] = useState("0");
 	const [region, setRegion] = useState();
@@ -84,6 +85,8 @@ function WidgetEditor() {
 	const displayKDParam = searchParams.get("show-kd");
 	const displayRankingParam = searchParams.get("show-ranking");
 	const displayLastTwentyMatchesParam = searchParams.get("show-last-20");
+
+	const updateTimeoutRef = useRef<any>(null);
 
 	useEffect(() => {
 		const updateStates = () => {
@@ -133,7 +136,37 @@ function WidgetEditor() {
 		const timeout = setTimeout(() => {
 			updateStates();
 		}, 0);
+
+		return () => clearTimeout(timeout); // Cleanup on unmount
 	}, []);
+
+	function update_widget(term: any, param: any) {
+		const params = new URLSearchParams(searchParams.toString());
+		if (term) {
+			params.set(param, term);
+		} else {
+			params.delete(param);
+		}
+
+		router.replace(`${pathname}?${params.toString()}`);
+	}
+
+	const handleColorChange = (
+		value: string,
+		param_name: string,
+		func: Function
+	) => {
+		const newColor = value;
+		func(newColor);
+
+		if (updateTimeoutRef.current) {
+			clearTimeout(updateTimeoutRef.current);
+		}
+
+		updateTimeoutRef.current = setTimeout(() => {
+			update_widget(newColor, param_name);
+		}, 100);
+	};
 
 	const headers = {
 		Authorization: "Bearer 5dbe323f-3fb4-4bd6-8b9f-b5688d63ebee",
@@ -201,6 +234,7 @@ function WidgetEditor() {
 					getStatsData(data.player_id);
 					getPlayerRanking(data.player_id, data.games.cs2.region);
 					getLastTwentyStatsData(data.player_id);
+					setAvatar(data.avatar);
 				}
 			});
 	}
@@ -212,17 +246,6 @@ function WidgetEditor() {
 			console.log("Updated data.");
 		}, 150000);
 	}, [nickname]);
-
-	function update_widget(term: any, param: any) {
-		const params = new URLSearchParams(searchParams.toString());
-		if (term) {
-			params.set(param, term);
-		} else {
-			params.delete(param);
-		}
-
-		router.replace(`${pathname}?${params.toString()}`);
-	}
 
 	return (
 		<section className="content">
@@ -358,31 +381,20 @@ function WidgetEditor() {
 										/>
 									</div>
 									<div className="container flex">
-										{/* <ColorPicker
-												onBlur={(e: any) => {
-													update_widget(
-														e.target.value.replace(
-															"#",
-															""
-														),
-														"background-color"
-													);
-												}}
-												onInput={(e: any) => {
-													setBackgroundColor(
-														e.target.value.replace(
-															"#",
-															""
-														)
-													);
-												}}
-												className="w-full"
-												name="widget-background-color"
-												id="background-color"
-												value={`#${backgroundColor}`}
-											/> */}
-										<ColorPickerAlt
-											default_value="#1f1f22"
+										<ColorPicker
+											onInput={(e: any) => {
+												handleColorChange(
+													e.currentTarget.value.replace(
+														"#",
+														""
+													),
+													"background-color",
+													setBackgroundColor
+												);
+											}}
+											className="w-full"
+											name="widget-background-color"
+											id="background-color"
 											value={`#${backgroundColor}`}
 										/>
 									</div>
@@ -390,31 +402,6 @@ function WidgetEditor() {
 								<div className="w-full">
 									<div className="truncate setting-label">
 										Text Color
-									</div>
-									<div className="container flex">
-										<ColorPicker
-											onBlur={(e: any) => {
-												update_widget(
-													e.target.value.replace(
-														"#",
-														""
-													),
-													"text-color"
-												);
-											}}
-											onInput={(e: any) => {
-												setTextColor(
-													e.target.value.replace(
-														"#",
-														""
-													)
-												);
-											}}
-											className="w-full"
-											name="widget-text-color"
-											id="text-color"
-											value={`#${textColor}`}
-										/>
 										<Button
 											onClick={(e: any) => {
 												update_widget(
@@ -426,13 +413,41 @@ function WidgetEditor() {
 											className="defaults-button"
 										/>
 									</div>
+									<div className="container flex">
+										<ColorPicker
+											onInput={(e: any) => {
+												handleColorChange(
+													e.currentTarget.value.replace(
+														"#",
+														""
+													),
+													"text-color",
+													setTextColor
+												);
+											}}
+											className="w-full"
+											name="widget-text-color"
+											id="text-color"
+											value={`#${textColor}`}
+										/>
+									</div>
 								</div>
 								<div className="setting">
 									<div className="truncate setting-label">
 										Border Radius
+										<Button
+											onClick={(e: any) => {
+												update_widget(
+													"24",
+													"border-radius"
+												);
+												setBorderRadius("24");
+											}}
+											className="defaults-button"
+										/>
 									</div>
 									<div className="container flex">
-										<div className="pxUnit">
+										<div className="w-full">
 											<input
 												type="number"
 												onInput={(e) => {
@@ -449,19 +464,12 @@ function WidgetEditor() {
 												id="border-radius"
 												min="0"
 												max="24"
+												onWheel={(e) => {
+													e.currentTarget.blur();
+												}}
 												value={`${border_radius}`}
 											/>
 										</div>
-										<Button
-											onClick={(e: any) => {
-												update_widget(
-													"24",
-													"border-radius"
-												);
-												setBorderRadius("24");
-											}}
-											className="defaults-button"
-										/>
 									</div>
 								</div>
 							</div>
@@ -470,6 +478,18 @@ function WidgetEditor() {
 								<div className="setting">
 									<div className="truncate setting-label gap-2 flex">
 										Average KDR
+										<Button
+											onClick={(e: any) => {
+												update_widget(
+													"false",
+													"show-kd"
+												);
+												setDisplayKD(
+													displayKDOptions[0]
+												);
+											}}
+											className="defaults-button"
+										/>
 									</div>
 									<div className="container flex">
 										<Listbox
@@ -538,24 +558,23 @@ function WidgetEditor() {
 												)}
 											</ListboxOptions>
 										</Listbox>
-
-										<Button
-											onClick={(e: any) => {
-												update_widget(
-													"false",
-													"show-kd"
-												);
-												setDisplayKD(
-													displayKDOptions[0]
-												);
-											}}
-											className="defaults-button"
-										/>
 									</div>
 								</div>
 								<div className="setting">
 									<div className="truncate setting-label gap-2 flex">
 										World Ranking
+										<Button
+											onClick={(e: any) => {
+												update_widget(
+													"false",
+													"show-ranking"
+												);
+												setDisplayRanking(
+													displayRankingOptions[0]
+												);
+											}}
+											className="defaults-button"
+										/>
 									</div>
 									<div className="container flex">
 										<Listbox
@@ -624,30 +643,23 @@ function WidgetEditor() {
 												)}
 											</ListboxOptions>
 										</Listbox>
-
-										<Button
-											onClick={(e: any) => {
-												update_widget(
-													"false",
-													"show-ranking"
-												);
-												setDisplayRanking(
-													displayRankingOptions[0]
-												);
-											}}
-											className="defaults-button"
-										/>
 									</div>
 								</div>
 								<div className="setting">
 									<div className="truncate setting-label gap-1 flex">
-										<span
-											id="status"
-											className="!bg-primary !py-[2px] !m-0 w-max h-min !rounded-sm text-shadow-xl"
-										>
-											NEW
-										</span>
 										Last 20 Matches Stats
+										<Button
+											onClick={(e: any) => {
+												update_widget(
+													"false",
+													"show-last-20"
+												);
+												setDisplayLastTwenty(
+													displayLastTwentyStatsOptions[0]
+												);
+											}}
+											className="defaults-button"
+										/>
 									</div>
 									<div className="container flex">
 										<Listbox
@@ -718,19 +730,6 @@ function WidgetEditor() {
 												)}
 											</ListboxOptions>
 										</Listbox>
-
-										<Button
-											onClick={(e: any) => {
-												update_widget(
-													"false",
-													"show-last-20"
-												);
-												setDisplayLastTwenty(
-													displayLastTwentyStatsOptions[0]
-												);
-											}}
-											className="defaults-button"
-										/>
 									</div>
 								</div>
 							</div>
@@ -771,6 +770,9 @@ function WidgetEditor() {
 							objectPosition="center"
 						/>
 						<Widget
+							data={data}
+							avatar={avatar}
+							nickname={nickname}
 							level={level}
 							elo={elo}
 							avgKd={avgKD}

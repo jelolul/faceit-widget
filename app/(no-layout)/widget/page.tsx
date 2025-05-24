@@ -8,7 +8,9 @@ export default function WidgetPage() {
 	const searchParams = useSearchParams();
 
 	const [data, setData] = useState();
+	const [avatar, setAvatar] = useState();
 	const [elo, setElo] = useState("----");
+	const [nickname, setNickname] = useState("----");
 	const [level, setLevel] = useState("0");
 	const [region, setRegion] = useState();
 
@@ -93,6 +95,8 @@ export default function WidgetPage() {
 					getStatsData(data.player_id);
 					getPlayerRanking(data.player_id, data.games.cs2.region);
 					getLastTwentyStatsData(data.player_id);
+					setNickname(data.nickname);
+					setAvatar(data.avatar);
 				}
 			});
 	}
@@ -107,6 +111,9 @@ export default function WidgetPage() {
 
 	return (
 		<Widget
+			data={data}
+			avatar={avatar}
+			nickname={nickname}
 			level={level}
 			elo={elo}
 			avgKd={avgKD}

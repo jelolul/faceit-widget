@@ -61,12 +61,31 @@ export default function Widget(props: any) {
 
 	return (
 		<div className={props.className + ` wrapper`}>
+			{/* <p
+				style={{
+					color: textColor,
+					backgroundColor: backgroundColor,
+					borderRadius: borderRadius.replace("px", "") / 4,
+				}}
+				className="text-[16px] m-auto pl-[4px] px-2 py-[1.5px] flex flex-row gap-1 items-center"
+			>
+				<img
+					src={`${props.avatar}`}
+					style={{
+						borderColor: textColor,
+						backgroundColor: textColor,
+					}}
+					className="size-[20px] rounded-full border-[1px]"
+				/>
+				{props.nickname}
+			</p> */}
 			<div
 				id="widget"
 				style={{
 					backgroundColor: backgroundColor,
 					borderRadius: borderRadius,
 				}}
+				className=""
 			>
 				<div id="wrap">
 					<Image

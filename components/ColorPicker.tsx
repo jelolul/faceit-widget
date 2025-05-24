@@ -1,5 +1,5 @@
 import React from "react";
-const ColorPicker = (props: any) => {
+const ColorPickerClassic = (props: any) => {
 	return (
 		<div className="color-picker">
 			<input
@@ -23,4 +23,4 @@ const ColorPicker = (props: any) => {
 	);
 };
 
-export default ColorPicker;
+export default ColorPickerClassic;

@@ -256,7 +256,7 @@ function sanitizeHex(val: string) {
 const ColorPickerAlt = (props: any) => {
 	// Initialize from controlled prop or a default
 	const [color, setColor] = useState<Color>(() => {
-		const hex = sanitizeHex(props.default_value || "#ffffff");
+		const hex = sanitizeHex(props.value || "#ffffff");
 		const hsl = hexToHsl({ hex: hex });
 		return { ...hsl, hex: sanitizeHex(hex) };
 	});
@@ -271,30 +271,30 @@ const ColorPickerAlt = (props: any) => {
 		}
 	};
 	return (
-		<>
-			<div className="z-30 flex w-full max-w-[300px] select-none flex-col items-center gap-3 overscroll-none border border-[#ffffff0a] bg-gray-300 rounded-[4px] p-[7px] text-[14px] placeholder:text-color-secondary">
-				<DraggableColorCanvas
-					{...color}
-					handleChange={(parital) => {
-						setColor((prev) => {
-							const value = { ...prev, ...parital };
-							const hex_formatted = hslToHex({
-								h: value.h,
-								s: value.s,
-								l: value.l,
-							});
-							return { ...value, hex: hex_formatted };
+		<div className="z-30 flex w-full max-w-[300px] select-none flex-col items-center gap-3 overscroll-none border border-[#ffffff0a] bg-gray-300 rounded-[4px] p-[7px] text-[14px] placeholder:text-color-secondary">
+			<DraggableColorCanvas
+				{...color}
+				handleChange={(parital) => {
+					setColor((prev) => {
+						const value = { ...prev, ...parital };
+						const hex_formatted = hslToHex({
+							h: value.h,
+							s: value.s,
+							l: value.l,
 						});
-					}}
-				/>
-				<input
-					type="range"
-					min="0"
-					max="360"
-					value={color.h}
-					className="h-3 w-full cursor-pointer appearance-none rounded-full border border-[#ffffff86] hover:border-[#ffffffb4] bg-white text-color-primary"
-					style={{
-						background: `linear-gradient(to right, 
+						props.onChange(hex_formatted);
+						return { ...value, hex: hex_formatted };
+					});
+				}}
+			/>
+			<input
+				type="range"
+				min="0"
+				max="360"
+				value={color.h}
+				className="h-3 w-full cursor-pointer appearance-none rounded-full border border-[#ffffff86] hover:border-[#ffffffb4] bg-white text-color-primary"
+				style={{
+					background: `linear-gradient(to right, 
                     hsl(0, 100%, 50%), 
                     hsl(60, 100%, 50%), 
                     hsl(120, 100%, 50%), 
@@ -302,54 +302,55 @@ const ColorPickerAlt = (props: any) => {
                     hsl(240, 100%, 50%), 
                     hsl(300, 100%, 50%), 
                     hsl(360, 100%, 50%))`,
-					}}
-					onChange={(e) => {
-						const hue = e.target.valueAsNumber;
-						setColor((prev) => {
-							const { hex, ...rest } = { ...prev, h: hue };
-							const hex_formatted = hslToHex({ ...rest });
-							return { ...rest, hex: hex_formatted };
-						});
+				}}
+				onChange={(e) => {
+					const hue = e.target.valueAsNumber;
+					setColor((prev) => {
+						const { hex, ...rest } = { ...prev, h: hue };
+						const hex_formatted = hslToHex({ ...rest });
+						props.onChange(hex_formatted);
+						return { ...rest, hex: hex_formatted };
+					});
+				}}
+			/>
+			<div className="relative h-fit w-full">
+				<div className="absolute inset-y-0 flex items-center pl-[8px] pointer-events-none">
+					<HashtagIcon className="size-4 text-color-secondary" />
+				</div>
+				<input
+					id="color-value"
+					className={clsx(
+						"flex w-full items-center justify-between rounded-[4px] !text-[16px] border p-2 text-sm focus:ring-1",
+						//10 px for the paddng on the hashtag, 16px for the icon
+						"pl-[26px]",
+						// 10px for the padding on the color badge, 28px for the color badge
+						"pr-[38px]",
+						// bg & text
+						"bg-transparent text-color-primary",
+						// borders & backgrounds
+						"border-[#ffffff3f]",
+						// hover classes
+						"hover:border-[#ffffff56]",
+						// focus classes
+						"focus:border-[#ffffff56] focus:ring-[#ffffff56]"
+						// selection styles
+					)}
+					value={color.hex}
+					onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+						handleHexInputChange(e.target.value);
+						props.onChange(e.target.value);
 					}}
 				/>
-				<div className="relative h-fit w-full">
-					<div className="absolute inset-y-0 flex items-center pl-[8px] pointer-events-none">
-						<HashtagIcon className="size-4 text-color-secondary" />
-					</div>
-					<input
-						id="color-value"
-						className={clsx(
-							"flex w-full items-center justify-between rounded-[4px] !text-[16px] border p-2 text-sm focus:ring-1",
-							//10 px for the paddng on the hashtag, 16px for the icon
-							"pl-[26px]",
-							// 10px for the padding on the color badge, 28px for the color badge
-							"pr-[38px]",
-							// bg & text
-							"bg-transparent text-color-primary",
-							// borders & backgrounds
-							"border-[#ffffff3f]",
-							// hover classes
-							"hover:border-[#ffffff56]",
-							// focus classes
-							"focus:border-[#ffffff56] focus:ring-[#ffffff56]"
-							// selection styles
-						)}
-						value={color.hex}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-							handleHexInputChange(e.target.value);
+				<div className="absolute inset-y-0 right-0 pointer-events-none flex h-full items-center px-[5px]">
+					<div
+						className="size-7 rounded-[2px] border border-[#ffffff56]"
+						style={{
+							backgroundColor: `hsl(${color.h}, ${color.s}%, ${color.l}%)`,
 						}}
 					/>
-					<div className="absolute inset-y-0 right-0 pointer-events-none flex h-full items-center px-[5px]">
-						<div
-							className="size-7 rounded-[2px] border border-[#ffffff56]"
-							style={{
-								backgroundColor: `hsl(${color.h}, ${color.s}%, ${color.l}%)`,
-							}}
-						/>
-					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 };
 
