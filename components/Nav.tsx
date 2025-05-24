@@ -32,7 +32,7 @@ const Nav = () => {
 	}
 
 	return (
-		<nav className="sticky flex w-full min-h-[64px] h-[64px] z-20 bg-gray-200 border-b-gray-300 border-b box-content shadow-nav">
+		<nav className="sticky top-0 flex w-full min-h-[64px] h-[64px] z-20 bg-gray-200 border-b-gray-300 border-b box-content shadow-nav">
 			<div className="sm:hidden flex items-center">
 				<button
 					onClick={() => {
@@ -54,7 +54,7 @@ const Nav = () => {
 					alt="FACEIT Logo"
 					width={30}
 					height={30}
-					className="object-center object-contain px-[16px] w-16"
+					className="object-center object-contain self-center px-[16px] w-16"
 				/>
 			</Link>
 			<nav
@@ -84,7 +84,7 @@ const Nav = () => {
 						height={32}
 						className="object-contain sm:px-[16px] w-[16px] sm:w-14"
 					/>
-					GitHub
+					<span className="sm:hidden visible">GitHub</span>
 				</Link>
 			</nav>
 		</nav>
