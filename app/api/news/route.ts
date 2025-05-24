@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import moment from "moment";
+export const runtime = 'edge';
 
 // Define the path to the directory containing Markdown files
 const postsDirectory = path.join(process.cwd(), "articles");
