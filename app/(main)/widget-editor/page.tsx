@@ -64,17 +64,17 @@ function WidgetEditor() {
 	const [backgroundColor, setBackgroundColor] = useState("1f1f22");
 	const [textColor, setTextColor] = useState("ffffff");
 
-	var [games, setGame] = useState<DropdownOptions>(gameOptions[0]);
+	const [games, setGame] = useState<DropdownOptions>(gameOptions[0]);
 
-	var [displayKD, setDisplayKD] = useState<DropdownOptions>(
+	const [displayKD, setDisplayKD] = useState<DropdownOptions>(
 		displayKDOptions[0]
 	);
 
-	var [displayRanking, setDisplayRanking] = useState<DropdownOptions>(
+	const [displayRanking, setDisplayRanking] = useState<DropdownOptions>(
 		displayRankingOptions[0]
 	);
 
-	var [displayLastTwenty, setDisplayLastTwenty] = useState<DropdownOptions>(
+	const [displayLastTwenty, setDisplayLastTwenty] = useState<DropdownOptions>(
 		displayLastTwentyStatsOptions[0]
 	);
 
@@ -88,12 +88,10 @@ function WidgetEditor() {
 
 	const updateTimeoutRef = useRef<any>(null);
 
+	const [notFound, setNotFound] = useState(false);
+
 	useEffect(() => {
 		const updateStates = () => {
-			// if (gameParam) {
-			// 	setGame(gameOptions[gameParam === "true" ? 1 : 0]);
-			// }
-
 			if (nicknameParam) {
 				setNickname(nicknameParam);
 			}
@@ -225,8 +223,23 @@ function WidgetEditor() {
 				"&game=cs2",
 			{ headers, method: "GET" }
 		)
-			.then((res) => res.json())
-			.then((data) => {
+				.then((res) => {
+					if (!res.ok) {
+						setNotFound(true);
+						setElo("----");
+						setLevel("0");
+						setAvgKD("-.--");
+						setPlayerRanking("----");
+						setPlayerStats(undefined);
+						setPlayerRankingData(undefined);
+						setPlayerLastTwentyStats(undefined);
+						return null;
+					}
+					setNotFound(false);
+					return res.json();
+				})
+				.then((data) => {
+					if (!data) return;
 				setData(data);
 				if (data.games?.cs2) {
 					setElo(data.games.cs2.faceit_elo);
@@ -244,7 +257,7 @@ function WidgetEditor() {
 		const timeout = setInterval(() => {
 			getFaceitData();
 			console.log("Updated data.");
-		}, 150000);
+		}, 180000);
 	}, [nickname]);
 
 	return (
@@ -258,15 +271,15 @@ function WidgetEditor() {
 								<div className="setting">
 									<div className="truncate setting-label">
 										FACEIT Nickname
-										{/* <span className="tooltip-text">Case-Sensitive</span> */}
+										<div className={`not-found-label ${notFound ? "show" : "hidden"}`}>Not Found</div>
 									</div>
 									<div className="flex">
 										<input
 											type="text"
 											id="faceit-nickname"
-											placeholder="FrozenBag"
+											placeholder="donk666"
 											onBlur={(e) => {
-												setNickname(e.target.value || "FrozenBag");
+												setNickname(e.target.value || "");
 											}}
 											onKeyDown={(e) => {
 												if (e.key === "Enter") {
@@ -279,7 +292,6 @@ function WidgetEditor() {
 											}}
 											value={nickname}
 										/>
-										{/* <Button className="!h-[35px] !leading-[12px] !w-10 !ml-1 !rounded-[4px] !px-0 !text-[16px]" onClick={e => { setNickname(searchParams.get('nickname')); }} text="S" /> */}
 									</div>
 								</div>
 								<div className="w-full">
