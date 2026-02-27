@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import Widget from "@components/Widget";
 
 export default function WidgetPage() {
@@ -101,13 +101,20 @@ export default function WidgetPage() {
 			});
 	}
 
+	const getFaceitDataRef = useRef(getFaceitData);
+
 	useEffect(() => {
-		getFaceitData();
+		getFaceitDataRef.current = getFaceitData;
+	});
+
+	useEffect(() => {
+		getFaceitDataRef.current();
 		const timeout = setInterval(() => {
-			getFaceitData();
-			console.log("Updated data.");
+			getFaceitDataRef.current();
 		}, 20000);
-	}, []);
+		return () => clearInterval(timeout);
+	}, [nickname]);
+
 
 	return (
 		<Widget
