@@ -252,12 +252,18 @@ function WidgetEditor() {
 			});
 	}
 
+	const getFaceitDataRef = useRef(getFaceitData);
+
 	useEffect(() => {
-		getFaceitData();
+		getFaceitDataRef.current = getFaceitData;
+	});
+
+	useEffect(() => {
+		getFaceitDataRef.current();
 		const timeout = setInterval(() => {
-			getFaceitData();
-			console.log("Updated data.");
+			getFaceitDataRef.current();
 		}, 180000);
+		return () => clearInterval(timeout);
 	}, [nickname]);
 
 	return (
