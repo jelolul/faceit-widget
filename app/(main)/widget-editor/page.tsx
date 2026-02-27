@@ -228,7 +228,7 @@ function WidgetEditor() {
 			.then((res) => res.json())
 			.then((data) => {
 				setData(data);
-				if (data.games) {
+				if (data.games?.cs2) {
 					setElo(data.games.cs2.faceit_elo);
 					setLevel(data.games.cs2.skill_level);
 					getStatsData(data.player_id);
@@ -266,28 +266,18 @@ function WidgetEditor() {
 											id="faceit-nickname"
 											placeholder="FrozenBag"
 											onBlur={(e) => {
-												setNickname(
-													searchParams.get(
-														"nickname"
-													) || "FrozenBag"
-												);
+												setNickname(e.target.value || "FrozenBag");
 											}}
 											onKeyDown={(e) => {
 												if (e.key === "Enter") {
-													setNickname(
-														searchParams.get(
-															"nickname"
-														) || "FrozenBag"
-													);
+													setNickname((e.target as HTMLInputElement).value || "FrozenBag");
 												}
 											}}
-											onChange={(e) =>
-												update_widget(
-													e.target.value,
-													"nickname"
-												)
-											}
-											value={`${nickname}`}
+											onChange={(e) => {
+												setNickname(e.target.value);
+												update_widget(e.target.value, "nickname");
+											}}
+											value={nickname}
 										/>
 										{/* <Button className="!h-[35px] !leading-[12px] !w-10 !ml-1 !rounded-[4px] !px-0 !text-[16px]" onClick={e => { setNickname(searchParams.get('nickname')); }} text="S" /> */}
 									</div>
