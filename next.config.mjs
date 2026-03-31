@@ -7,6 +7,7 @@ const nextConfig = {
         }
         return config
     },
+    turbopack: {},
     redirects: async () => [
         {
             source: '/:path*',
