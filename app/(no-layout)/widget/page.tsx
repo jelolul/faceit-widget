@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import LegacyWidget from "@components/v1/Widget";
 import Widget from "@components/Widget";
 
 export default function WidgetPage() {
@@ -10,7 +11,7 @@ export default function WidgetPage() {
 	const [data, setData] = useState();
 	const [avatar, setAvatar] = useState();
 	const [elo, setElo] = useState("----");
-	const [nickname, setNickname] = useState("----");
+	const [nickname, setNickname] = useState("");
 	const [level, setLevel] = useState("0");
 	const [region, setRegion] = useState();
 
@@ -24,6 +25,8 @@ export default function WidgetPage() {
 	const colorParam = searchParams.get("text-color");
 	const borderRadiusParam = searchParams.get("border-radius");
 	const nicknameParam = searchParams.get("nickname") || "";
+	const widgetStyleParam = searchParams.get("style") || "modern";
+	const displayNicknameParam = searchParams.get("show-nickname");
 	const displayKDParam = searchParams.get("show-kd");
 	const displayRankingParam = searchParams.get("show-ranking");
 	const displayLastTwentyMatchesParam = searchParams.get("show-last-20");
@@ -124,6 +127,7 @@ export default function WidgetPage() {
 			level={level}
 			elo={elo}
 			avgKd={avgKD}
+			displayNickname={displayNicknameParam}
 			displayKD={displayKDParam}
 			playerRanking={playerRanking}
 			displayRanking={displayRankingParam}

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Widget from "@components/Widget";
+import LegacyWidget from "@components/v1/Widget";
 import Button from "@components/Button";
 import ColorPicker from "@components/ColorPicker";
 
@@ -26,6 +27,16 @@ interface DropdownOptions {
 }
 
 const gameOptions: DropdownOptions[] = [{ id: 1, name: "CS2" }];
+
+const widgetStyleOptions: DropdownOptions[] = [
+	{ id: 1, name: "legacy" },
+	{ id: 2, name: "modern" },
+];
+
+const displayNicknameOptions: DropdownOptions[] = [
+	{ id: 1, name: "hide" },
+	{ id: 2, name: "show" },
+];
 
 const displayKDOptions: DropdownOptions[] = [
 	{ id: 1, name: "hide" },
@@ -61,10 +72,18 @@ function WidgetEditor() {
 
 	const [nickname, setNickname] = useState("");
 	const [border_radius, setBorderRadius] = useState("24");
-	const [backgroundColor, setBackgroundColor] = useState("1f1f22");
+	const [backgroundColor, setBackgroundColor] = useState("0b0b0b");
 	const [textColor, setTextColor] = useState("ffffff");
 
 	const [games, setGame] = useState<DropdownOptions>(gameOptions[0]);
+
+	const [widgetStyle, setWidgetStyle] = useState<DropdownOptions>(
+		widgetStyleOptions[1]
+	);
+
+	const [displayNickname, setDisplayNickname] = useState<DropdownOptions>(
+		displayNicknameOptions[0]
+	);
 
 	const [displayKD, setDisplayKD] = useState<DropdownOptions>(
 		displayKDOptions[0]
@@ -82,6 +101,8 @@ function WidgetEditor() {
 	const backgroundParam = searchParams.get("background-color");
 	const colorParam = searchParams.get("text-color");
 	const borderRadiusParam = searchParams.get("border-radius");
+	const widgetStyleParam = searchParams.get("style");
+	const displayNicknameParam = searchParams.get("show-nickname");
 	const displayKDParam = searchParams.get("show-kd");
 	const displayRankingParam = searchParams.get("show-ranking");
 	const displayLastTwentyMatchesParam = searchParams.get("show-last-20");
@@ -106,6 +127,22 @@ function WidgetEditor() {
 
 			if (borderRadiusParam) {
 				setBorderRadius(borderRadiusParam);
+			}
+
+			if (widgetStyleParam) {
+				const found = widgetStyleOptions.find(
+					(option) => option.name === widgetStyleParam
+				);
+
+				if (found) {
+					setWidgetStyle(found);
+				}
+			}
+
+			if (displayNicknameParam) {
+				setDisplayNickname(
+					displayNicknameOptions[displayNicknameParam === "true" ? 1 : 0]
+				);
 			}
 
 			if (displayKDParam) {
@@ -233,6 +270,7 @@ function WidgetEditor() {
 						setPlayerStats(undefined);
 						setPlayerRankingData(undefined);
 						setPlayerLastTwentyStats(undefined);
+						setAvatar(undefined)
 						return null;
 					}
 					setNotFound(false);
@@ -374,16 +412,95 @@ function WidgetEditor() {
 							</div>
 							<div className="section-label">Appearance</div>
 							<div className="section">
+								<div className="setting">
+									<div className="truncate setting-label gap-2 flex">
+										Style
+										<Button
+											onClick={(e: any) => {
+												update_widget(
+													"modern",
+													"style"
+												);
+												setWidgetStyle(
+													widgetStyleOptions[1]
+												);
+											}}
+											className="defaults-button"
+										/>
+									</div>
+									<div className="container flex">
+										<Listbox
+											value={widgetStyle}
+											onChange={(e) => {
+												update_widget(
+													e.name,
+													"style"
+												);
+												setWidgetStyle(e);
+											}}
+										>
+											<ListboxButton
+												className={clsx(
+													"text-[16px] flex text-left dropdown-button capitalize w-full"
+												)}
+											>
+												<div className="w-full pl-[3px]">
+													{widgetStyle?.name}
+												</div>
+												<div
+													className="size-[20px]"
+													style={{
+														backgroundImage: `url(${"assets/icons/arrow-down.svg"})`,
+														backgroundSize:
+															"contain",
+														backgroundPosition:
+															"center",
+														backgroundRepeat:
+															"no-repeat",
+													}}
+												></div>
+											</ListboxButton>
+											<ListboxOptions
+												className={clsx(
+													"w-[var(--button-width)] mt-[5px] [--anchor-gap:var(--spacing-1)] focus:outline-none",
+													"transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0 flex flex-col gap-[2px] overflow-hidden z-10 dropdown-menu"
+												)}
+												anchor="bottom"
+											>
+												{widgetStyleOptions.map(
+													(widgetStyleOptions) => (
+														<ListboxOption
+															key={
+																widgetStyleOptions.id
+															}
+															value={
+																widgetStyleOptions
+															}
+															className="select-none text-[16px] px-[12px] py-[6px] capitalize text-left content-center dropdown-option"
+															data-focus
+														>
+															{
+																widgetStyleOptions.name
+															}
+														</ListboxOption>
+													)
+												)}
+											</ListboxOptions>
+										</Listbox>
+									</div>
+								</div>
 								<div className="w-full">
 									<div className="truncate setting-label">
 										Background Color
 										<Button
 											onClick={(e: any) => {
 												update_widget(
-													"1f1f22",
+													"",
 													"background-color"
 												);
-												setBackgroundColor("1f1f22");
+												setBackgroundColor(
+													widgetStyle.name === "legacy" ? "1f1f22" : "0b0b0b"
+												);
 											}}
 											className="defaults-button"
 										/>
@@ -413,7 +530,7 @@ function WidgetEditor() {
 										<Button
 											onClick={(e: any) => {
 												update_widget(
-													"ffffff",
+													"",
 													"text-color"
 												);
 												setTextColor("ffffff");
@@ -489,7 +606,7 @@ function WidgetEditor() {
 										<Button
 											onClick={(e: any) => {
 												update_widget(
-													"false",
+													"",
 													"show-kd"
 												);
 												setDisplayKD(
@@ -574,7 +691,7 @@ function WidgetEditor() {
 										<Button
 											onClick={(e: any) => {
 												update_widget(
-													"false",
+													"",
 													"show-ranking"
 												);
 												setDisplayRanking(
@@ -659,7 +776,7 @@ function WidgetEditor() {
 										<Button
 											onClick={(e: any) => {
 												update_widget(
-													"false",
+													"",
 													"show-last-20"
 												);
 												setDisplayLastTwenty(
@@ -774,28 +891,51 @@ function WidgetEditor() {
 							src="/assets/images/nuke_default_s2.jpg"
 							alt="de_nuke in CS2"
 							fill={true}
-							objectFit="cover"
-							objectPosition="center"
+							loading="eager"
 						/>
-						<Widget
-							data={data}
-							avatar={avatar}
-							nickname={nickname}
-							level={level}
-							elo={elo}
-							avgKd={avgKD}
-							displayKD={displayKDParam}
-							playerRanking={playerRanking}
-							displayRanking={displayRankingParam}
-							displayLastTwentyMatches={
-								displayLastTwentyMatchesParam
-							}
-							lastTwentyStats={playerLastTwentyStats}
-							className="widget-2x-zoom"
-							borderRadius={borderRadiusParam + "px"}
-							backgroundColor={"#" + backgroundParam}
-							textColor={`#${colorParam}`}
-						/>
+						{widgetStyle?.name === "legacy" ? (
+							<LegacyWidget
+								data={data}
+								avatar={avatar}
+								nickname={nickname}
+								level={level}
+								elo={elo}
+								avgKd={avgKD}
+								displayNickname={displayNicknameParam}
+								displayKD={displayKDParam}
+								playerRanking={playerRanking}
+								displayRanking={displayRankingParam}
+								displayLastTwentyMatches={
+									displayLastTwentyMatchesParam
+								}
+								lastTwentyStats={playerLastTwentyStats}
+								className="widget-2x-zoom"
+								borderRadius={borderRadiusParam + "px"}
+								backgroundColor={"#" + backgroundParam}
+								textColor={`#${colorParam}`}
+							/>
+						) : (
+							<Widget
+								data={data}
+								avatar={avatar}
+								nickname={nickname}
+								level={level}
+								elo={elo}
+								avgKd={avgKD}
+								displayNickname={displayNicknameParam}
+								displayKD={displayKDParam}
+								playerRanking={playerRanking}
+								displayRanking={displayRankingParam}
+								displayLastTwentyMatches={
+									displayLastTwentyMatchesParam
+								}
+								lastTwentyStats={playerLastTwentyStats}
+								className="widget-2x-zoom"
+								borderRadius={borderRadiusParam + "px"}
+								backgroundColor={"#" + backgroundParam}
+								textColor={`#${colorParam}`}
+							/>
+						)}
 					</div>
 				</div>
 			</div>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 export default function Widget(props: any) {
+	const shouldDisplayNickname = props.displayNickname === "true";
 	const shouldDisplayKD = props.displayKD === "true";
 	const shouldDisplayRanking = props.displayRanking === "true";
 
@@ -14,7 +15,7 @@ export default function Widget(props: any) {
 
 	const backgroundColor =
 		String(props.backgroundColor).replace("#", "") === "null"
-			? "#1f1f22"
+			? "#0b0b0b"
 			: props.backgroundColor;
 
 	const borderRadius =
@@ -59,102 +60,139 @@ export default function Widget(props: any) {
 			? props.lastTwentyStats
 			: calculateAverages(props.lastTwentyStats.items);
 
+	const levelColor = (() => {
+		const level = parseInt(props.level);
+		
+		return "var(--faceit-level-" + level + ")";
+	})();
+
+	const levelGradient = (() => {
+		const level = parseInt(props.level);
+		
+		if (level < 2) {
+			// White (level 1)
+			return "radial-gradient(100% 70.85% at 50% 30%, rgba(204, 204, 204, 0.18) 0%, rgba(204, 204, 204, 0.08) 50%, rgba(204, 204, 204, 0) 100%), radial-gradient(100% 70.85% at 50% 30%, rgba(204, 204, 204, 0.043) 0%, rgba(204, 204, 204, 0.02) 50%, rgba(204, 204, 204, 0) 100%)";
+		} else if (level <= 3) {
+			// Green (levels 2-3)
+			return "radial-gradient(100% 70.85% at 50% 30%, rgba(71, 227, 110, 0.18) 0%, rgba(71, 227, 110, 0.08) 50%, rgba(71, 227, 110, 0) 100%), radial-gradient(100% 70.85% at 50% 30%, rgba(71, 227, 110, 0.043) 0%, rgba(71, 227, 110, 0.02) 50%, rgba(71, 227, 110, 0) 100%)";
+		} else if (level <= 7) {
+			// Yellow (levels 5-7)
+			return "radial-gradient(100% 70.85% at 50% 30%, rgba(255, 205, 37, 0.18) 0%, rgba(255, 205, 37, 0.08) 50%, rgba(255, 205, 37, 0) 100%), radial-gradient(100% 70.85% at 50% 30%, rgba(255, 205, 37, 0.043) 0%, rgba(255, 205, 37, 0.02) 50%, rgba(255, 205, 37, 0) 100%)";
+		} else if (level <= 9) {
+			// Orange (levels 8-9)
+			return "radial-gradient(100% 70.85% at 50% 30%, rgba(255, 108, 32, 0.18) 0%, rgba(255, 108, 32, 0.08) 50%, rgba(255, 108, 32, 0) 100%), radial-gradient(100% 70.85% at 50% 30%, rgba(255, 108, 32, 0.043) 0%, rgba(255, 108, 32, 0.02) 50%, rgba(255, 108, 32, 0) 100%)";
+		} else {
+			// Red (level 10)
+			return "radial-gradient(100% 70.85% at 50% 30%, rgba(255, 34, 72, 0.18) 0%, rgba(255, 34, 72, 0.08) 50%, rgba(255, 34, 72, 0) 100%), radial-gradient(100% 70.85% at 50% 30%, rgba(255, 34, 72, 0.043) 0%, rgba(255, 34, 72, 0.02) 50%, rgba(255, 34, 72, 0) 100%)";
+		}
+	})();
+
+	const levelBorderGradient = (() => {
+		const level = parseInt(props.level);
+		
+		if (level < 2) {
+			// White (level 1)
+			return "radial-gradient(circle at center top, rgba(204, 204, 204, 0.65) 0%, rgba(0, 0, 0, 0) 50%), linear-gradient(rgb(204, 204, 204) 0%, rgb(56, 56, 56) 60%)";
+		} else if (level <= 3) {
+			// Green (levels 2-3)
+			return "radial-gradient(circle at center top, rgba(71, 227, 110, 0.65) 0%, rgba(0, 0, 0, 0) 50%), linear-gradient(rgb(71, 227, 110) 0%, rgb(56, 56, 56) 60%)";
+		} else if (level <= 7) {
+			// Yellow (levels 5-7)
+			return "radial-gradient(circle at center top, rgba(255, 205, 37, 0.65) 0%, rgba(0, 0, 0, 0) 50%), linear-gradient(rgb(255, 205, 37) 0%, rgb(56, 56, 56) 60%)";
+		} else if (level <= 9) {
+			// Orange (levels 8-9)
+			return "radial-gradient(circle at center top, rgba(255, 108, 32, 0.65) 0%, rgba(0, 0, 0, 0) 50%), linear-gradient(rgb(255, 108, 32) 0%, rgb(56, 56, 56) 60%)";
+		} else {
+			// Red (level 10)
+			return "radial-gradient(circle at center top, rgba(255, 34, 72, 0.65) 0%, rgba(0, 0, 0, 0) 50%), linear-gradient(rgb(255, 34, 72) 0%, rgb(56, 56, 56) 60%)";
+		}
+	})();
+
 	return (
-		<div className={props.className + ` wrapper`}>
-			{/* <p
-				style={{
-					color: textColor,
-					backgroundColor: backgroundColor,
-					borderRadius: borderRadius.replace("px", "") / 4,
-				}}
-				className="text-[16px] m-auto pl-[4px] px-2 py-[1.5px] flex flex-row gap-1 items-center"
-			>
-				<img
-					src={`${props.avatar}`}
-					style={{
-						borderColor: textColor,
-						backgroundColor: textColor,
-					}}
-					className="size-[20px] rounded-full border-[1px]"
-				/>
-				{props.nickname}
-			</p> */}
+		<div className={props.className + ` wrapper`} style={{color: textColor, borderRadius: borderRadius + "px"}}>
 			<div
-				id="widget"
-				style={{
-					backgroundColor: backgroundColor,
-					borderRadius: borderRadius,
-				}}
-				className=""
-			>
-				<div id="wrap">
+				id="widget--modern"
+				style={{ 
+					"--faceit-level-bg-gradient": levelGradient,
+					"--faceit-level-border-gradient": levelBorderGradient
+				} as React.CSSProperties}
+				>
+				<p
+					className="text-[16px] m-auto p-2 flex flex-col gap-2 items-center"
+				>
+					<img
+						src={props.avatar?.trim() ? props.avatar : "assets/icons/favicon.svg"}
+						onError={(e) => {
+							(e.currentTarget as HTMLImageElement).src = "/assets/images/favicon.svg";
+						}}
+						style={{
+							backgroundColor: textColor,
+							outlineColor: levelColor
+						}}
+						className="size-[4rem] rounded-full outline outline-[2px]"
+					/>
+					{props.nickname || "----"}
+				</p>
+
+				<div id="wrap--modern">
 					<Image
 						id="level-pic"
 						width={32}
 						height={32}
+						style={{"fill": "#121212"}}
 						src={
-							"assets/icons/skill_level/skill_level_" +
+							"assets/icons/skill_level_v2/skill_level_" +
 							props.level +
 							".svg"
 						}
 						alt=""
-					/>
+						/>
 					<p style={{ color: textColor }} id="elo">
 						{props.elo}
 					</p>
 				</div>
-
-				{/* Conditionally render the separator and stats div */}
-				{shouldDisplayKD && (
-					<>
-						<div
-							className={`separator border-l-[1px]`}
-							style={{ borderLeftColor: textColor }}
-						></div>
-						<div id="stats">
-							<div style={{ color: textColor }}>
-								{props.avgKd || "-.--"}
+				<div className="more-stats-wrapper">
+					{/* Conditionally render the separator and stats div */}
+					{shouldDisplayKD && (
+						<>
+							<div id="stats--v2">
+								<div style={{ color: textColor }}>
+									{props.avgKd || "-.--"}
+								</div>
+								<div style={{ color: textColor }}>KDR</div>
 							</div>
-							<div style={{ color: textColor }}>KDR</div>
-						</div>
-					</>
-				)}
-				{shouldDisplayRanking && (
-					<>
-						<div
-							className={`separator border-l-[1px]`}
-							style={{ borderLeftColor: textColor }}
-						></div>
-						<div id="stats" className="!gap-[8px]">
-							<div
-								className={`flex flex-col place-items-center gap-0`}
-							>
+						</>
+					)}
+					{shouldDisplayRanking && (
+						<>
+							<div id="stats--v2">
 								<div
-									className={`mdi--globe`}
-									style={{
-										backgroundImage: `url(
-										"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='${encodeURIComponent(
-											textColor
-										)}' d='M17.9 17.39c-.26-.8-1.01-1.39-1.9-1.39h-1v-3a1 1 0 0 0-1-1H8v-2h2a1 1 0 0 0 1-1V7h2a2 2 0 0 0 2-2v-.41a7.984 7.984 0 0 1 2.9 12.8M11 19.93c-3.95-.49-7-3.85-7-7.93c0-.62.08-1.22.21-1.79L9 15v1a2 2 0 0 0 2 2m1-16A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2'/%3E%3C/svg%3E"
-										)`,
-									}}
-								></div>
-								{/* <div className="text-[12px]"><small>WORLD</small></div> */}
+									className={`flex flex-col place-items-center gap-0`}
+								>
+									<div
+										className={`mdi--globe--v2`}
+										style={{
+											backgroundImage: `url(
+											"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='${encodeURIComponent(
+												textColor
+											)}' d='M17.9 17.39c-.26-.8-1.01-1.39-1.9-1.39h-1v-3a1 1 0 0 0-1-1H8v-2h2a1 1 0 0 0 1-1V7h2a2 2 0 0 0 2-2v-.41a7.984 7.984 0 0 1 2.9 12.8M11 19.93c-3.95-.49-7-3.85-7-7.93c0-.62.08-1.22.21-1.79L9 15v1a2 2 0 0 0 2 2m1-16A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2'/%3E%3C/svg%3E"
+											)`,
+										}}
+									></div>
+								</div>
+								<div style={{ color: textColor }}>
+									{props.playerRanking}
+								</div>
 							</div>
-							{/* <</div>div>{props.region}</div> */}
-							{/* <div>Ranking</div> */}
-							<div style={{ color: textColor }}>
-								#{props.playerRanking}
-							</div>
-						</div>
-					</>
-				)}
+						</>
+					)}
+				</div>
 			</div>
 			{shouldDisplayLastTwentyMatches && (
 				<>
 					<div
-						id="stats"
-						className="!gap-[2px] flex flex-col !w-full !max-w-[300px] !items-start px-3 py-1 pt-0"
+						id="last-twenty-matches"
+						className="!gap-[2px] flex flex-col !w-full !items-start px-3 py-1 pt-0"
 						style={{
 							backgroundColor: backgroundColor,
 							borderRadius: borderRadius.replace("px", "") / 2,
